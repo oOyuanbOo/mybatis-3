@@ -27,27 +27,39 @@ import java.lang.reflect.Type;
  */
 public abstract class TypeReference<T> {
 
+  /**
+   * 原始类型
+   */
   private final Type rawType;
 
+  /**
+   * 构造方法只允许子类调用
+   */
   protected TypeReference() {
     rawType = getSuperclassTypeParameter(getClass());
   }
 
   Type getSuperclassTypeParameter(Class<?> clazz) {
+    // 获取包含泛型的父类
     Type genericSuperclass = clazz.getGenericSuperclass();
+    // 如果父类不包含泛型
     if (genericSuperclass instanceof Class) {
       // try to climb up the hierarchy until meet something useful
+      // 如果还有父类
       if (TypeReference.class != genericSuperclass) {
+        // 递归调用
         return getSuperclassTypeParameter(clazz.getSuperclass());
       }
-
+      // 这个异常抛的爸比不知所以
       throw new TypeException("'" + getClass() + "' extends TypeReference but misses the type parameter. "
         + "Remove the extension or add a type parameter to it.");
     }
-
+    // 获取原始类型
     Type rawType = ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];
     // TODO remove this when Reflector is fixed to return Types
+    // 如果原始类型还包含泛型
     if (rawType instanceof ParameterizedType) {
+      // 就再取一层，我日   类型真是复杂
       rawType = ((ParameterizedType) rawType).getRawType();
     }
 

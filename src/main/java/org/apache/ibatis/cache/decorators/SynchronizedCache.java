@@ -19,6 +19,7 @@ import org.apache.ibatis.cache.Cache;
 
 /**
  * @author Clinton Begin
+ * 相当于给HashMap套了个HashTable，包装了一层synchronized锁
  */
 public class SynchronizedCache implements Cache {
 

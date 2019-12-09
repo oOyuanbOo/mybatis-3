@@ -34,14 +34,24 @@ import org.apache.ibatis.logging.LogFactory;
  *
  * @author Clinton Begin
  * @author Eduardo Macarron
+ * 这个是两个作者，看阵仗不简单，和事务有关系
  */
 public class TransactionalCache implements Cache {
 
   private static final Log log = LogFactory.getLog(TransactionalCache.class);
 
   private final Cache delegate;
+  /**
+   * 提交触发清空
+   */
   private boolean clearOnCommit;
+  /**
+   * 提交之后要新增的键值对
+   */
   private final Map<Object, Object> entriesToAddOnCommit;
+  /**
+   * 没查到的数据
+   */
   private final Set<Object> entriesMissedInCache;
 
   public TransactionalCache(Cache delegate) {
@@ -66,9 +76,11 @@ public class TransactionalCache implements Cache {
     // issue #116
     Object object = delegate.getObject(key);
     if (object == null) {
+      // 如果没查到就存到这个set里
       entriesMissedInCache.add(key);
     }
     // issue #146
+    // 如果设置了提交就清空，那么返回null
     if (clearOnCommit) {
       return null;
     } else {
@@ -78,6 +90,7 @@ public class TransactionalCache implements Cache {
 
   @Override
   public void putObject(Object key, Object object) {
+    // 这个put操作很有意思，是写到一个map里，并没有着急写入cache，来看一下
     entriesToAddOnCommit.put(key, object);
   }
 
@@ -89,18 +102,23 @@ public class TransactionalCache implements Cache {
   @Override
   public void clear() {
     clearOnCommit = true;
+    // 这个队列搞的像真正的缓存一样
     entriesToAddOnCommit.clear();
   }
 
   public void commit() {
+    // 清空缓存
     if (clearOnCommit) {
       delegate.clear();
     }
+    // 缓存的缓存刷新到缓存，类似事务
     flushPendingEntries();
+    // 重置参数
     reset();
   }
 
   public void rollback() {
+    // 回滚
     unlockMissedEntries();
     reset();
   }
@@ -112,9 +130,11 @@ public class TransactionalCache implements Cache {
   }
 
   private void flushPendingEntries() {
+    // 遍历这个缓存的缓存，并写入到整整的缓存里
     for (Map.Entry<Object, Object> entry : entriesToAddOnCommit.entrySet()) {
       delegate.putObject(entry.getKey(), entry.getValue());
     }
+    // 如果当前的待提交的缓存里也没有这个查不到的key，那么就给他存个null，防止缓存击穿
     for (Object entry : entriesMissedInCache) {
       if (!entriesToAddOnCommit.containsKey(entry)) {
         delegate.putObject(entry, null);
@@ -123,6 +143,7 @@ public class TransactionalCache implements Cache {
   }
 
   private void unlockMissedEntries() {
+    // 查不到的这些key。有可能在commit的时候，被设为null，如果rollback了，那么就从缓存中清除
     for (Object entry : entriesMissedInCache) {
       try {
         delegate.removeObject(entry);
