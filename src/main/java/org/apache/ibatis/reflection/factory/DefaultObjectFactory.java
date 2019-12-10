@@ -17,7 +17,21 @@ package org.apache.ibatis.reflection.factory;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
+<<<<<<< HEAD
 import java.util.*;
+=======
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
 import java.util.stream.Collectors;
 
 import org.apache.ibatis.reflection.ReflectionException;
@@ -47,7 +61,10 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
     try {
       Constructor<T> constructor;
       if (constructorArgTypes == null || constructorArgs == null) {
+<<<<<<< HEAD
         // 如果没有指定的构造函数，就用默认无参的
+=======
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
         constructor = type.getDeclaredConstructor();
         try {
           return constructor.newInstance();
@@ -60,7 +77,10 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
           }
         }
       }
+<<<<<<< HEAD
       // 学习Class getDeclaredConstructor的使用
+=======
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       constructor = type.getDeclaredConstructor(constructorArgTypes.toArray(new Class[constructorArgTypes.size()]));
       try {
         return constructor.newInstance(constructorArgs.toArray(new Object[constructorArgs.size()]));
@@ -73,9 +93,14 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
         }
       }
     } catch (Exception e) {
+<<<<<<< HEAD
       // 牛批，又来骚操作了
       // 解释下Optional这几个方法
       // ofNullable 不知道对象是不是null调用这个方法； of 为空则抛出异常，要来早点断言；empty 就是空
+=======
+      // 这句话的意思是如果constructorArgTypes为空，则让其指向一个空的List，map指向getSimpleName
+      // 则把类名用逗号连接起来返回
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       String argTypes = Optional.ofNullable(constructorArgTypes).orElseGet(Collections::emptyList)
           .stream().map(Class::getSimpleName).collect(Collectors.joining(","));
       String argValues = Optional.ofNullable(constructorArgs).orElseGet(Collections::emptyList)
@@ -84,6 +109,7 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
     }
   }
 
+<<<<<<< HEAD
   public static void main(String[] args) {
 //    List<String> list = null;
     List<String> list = Arrays.asList(new String[]{"a", "b","3"});
@@ -97,6 +123,8 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
    * @param type
    * @return
    */
+=======
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   protected Class<?> resolveInterface(Class<?> type) {
     Class<?> classToCreate;
     if (type == List.class || type == Collection.class || type == Iterable.class) {
@@ -115,7 +143,10 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
 
   @Override
   public <T> boolean isCollection(Class<T> type) {
+<<<<<<< HEAD
     // 我是你爹类
+=======
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     return Collection.class.isAssignableFrom(type);
   }
 

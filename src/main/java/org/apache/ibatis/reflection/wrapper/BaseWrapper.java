@@ -24,11 +24,15 @@ import org.apache.ibatis.reflection.property.PropertyTokenizer;
 
 /**
  * @author Clinton Begin
+<<<<<<< HEAD
  * 实现ObjectWrapper接口，为子类BeanWrapper和MapWrapper提供属性值的获取和设置的共用方法
+=======
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
  */
 public abstract class BaseWrapper implements ObjectWrapper {
 
   protected static final Object[] NO_ARGUMENTS = new Object[0];
+<<<<<<< HEAD
   /**
    * metaobject 对象
    */
@@ -37,16 +41,23 @@ public abstract class BaseWrapper implements ObjectWrapper {
   /**
    * @param metaObject
    */
+=======
+  protected final MetaObject metaObject;
+
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   protected BaseWrapper(MetaObject metaObject) {
     this.metaObject = metaObject;
   }
 
+<<<<<<< HEAD
   /**
    * 获取指定属性的值
    * @param prop
    * @param object
    * @return
    */
+=======
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   protected Object resolveCollection(PropertyTokenizer prop, Object object) {
     if ("".equals(prop.getName())) {
       return object;
@@ -55,6 +66,7 @@ public abstract class BaseWrapper implements ObjectWrapper {
     }
   }
 
+<<<<<<< HEAD
   /**
    * 获得集合中指定位置的值
    * @param prop
@@ -63,6 +75,9 @@ public abstract class BaseWrapper implements ObjectWrapper {
    */
   protected Object getCollectionValue(PropertyTokenizer prop, Object collection) {
     // 除了Map List 还有各种基本烈性的数组
+=======
+  protected Object getCollectionValue(PropertyTokenizer prop, Object collection) {
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     if (collection instanceof Map) {
       return ((Map) collection).get(prop.getIndex());
     } else {
@@ -93,12 +108,15 @@ public abstract class BaseWrapper implements ObjectWrapper {
     }
   }
 
+<<<<<<< HEAD
   /**
    * 设置集合中指定位置的值
    * @param prop
    * @param collection
    * @param value
    */
+=======
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   protected void setCollectionValue(PropertyTokenizer prop, Object collection, Object value) {
     if (collection instanceof Map) {
       ((Map) collection).put(prop.getIndex(), value);
@@ -130,4 +148,8 @@ public abstract class BaseWrapper implements ObjectWrapper {
     }
   }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0

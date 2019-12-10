@@ -35,6 +35,13 @@ class StringListTest {
 
   private static SqlSessionFactory sqlSessionFactory;
 
+<<<<<<< HEAD
+=======
+  /**
+   * Junit5的beforeAll方法，和方法里面Resource读取实现相同，不过这个大多用来填充应用的类变量
+   * @throws Exception
+   */
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   @BeforeAll
   static void setUp() throws Exception {
     // create a SqlSessionFactory

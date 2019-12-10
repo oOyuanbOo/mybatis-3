@@ -37,6 +37,11 @@ import java.util.concurrent.locks.ReadWriteLock;
  * </pre>
  *
  * @author Clinton Begin
+<<<<<<< HEAD
+=======
+ * 类似于一个HashMap 存取数据
+ * Cache 基于不同的缓存过期策略、特性，有不同的实现类
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
  */
 
 public interface Cache {

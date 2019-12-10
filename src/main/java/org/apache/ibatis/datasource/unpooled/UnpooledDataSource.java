@@ -35,6 +35,7 @@ import org.apache.ibatis.io.Resources;
 /**
  * @author Clinton Begin
  * @author Eduardo Macarron
+<<<<<<< HEAD
  */
 public class UnpooledDataSource implements DataSource {
 
@@ -52,6 +53,37 @@ public class UnpooledDataSource implements DataSource {
   private Integer defaultNetworkTimeout;
 
   static {
+=======
+ * 没用池技术的数据源是怎么实现的呢，来看看
+ */
+public class UnpooledDataSource implements DataSource {
+
+  // 驱动的类加载器
+  private ClassLoader driverClassLoader;
+  // 属性
+  private Properties driverProperties;
+  // 一个线程安全的驱动注册Map，是个类变量
+  private static Map<String, Driver> registeredDrivers = new ConcurrentHashMap<>();
+  // 驱动
+  private String driver;
+  // 地址信息
+  private String url;
+  // 用户名 密码
+  private String username;
+  private String password;
+
+  // 自动提交
+  private Boolean autoCommit;
+  // 默认事务隔离级别
+  private Integer defaultTransactionIsolationLevel;
+  // 默认连接超时时间
+  private Integer defaultNetworkTimeout;
+
+  static {
+    // 类的装载机制中，静态成员变量 - 静态代码块 - 非静态成员变量 - 非静态代码块 — 构造方法
+    // 这些驱动都是从哪儿来的
+    // Class.forName("com.msyql.driver")
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     Enumeration<Driver> drivers = DriverManager.getDrivers();
     while (drivers.hasMoreElements()) {
       Driver driver = drivers.nextElement();
@@ -61,20 +93,32 @@ public class UnpooledDataSource implements DataSource {
 
   public UnpooledDataSource() {
   }
+<<<<<<< HEAD
 
+=======
+  // 可以是明文
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   public UnpooledDataSource(String driver, String url, String username, String password) {
     this.driver = driver;
     this.url = url;
     this.username = username;
     this.password = password;
   }
+<<<<<<< HEAD
 
+=======
+  // 也可以是属性
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   public UnpooledDataSource(String driver, String url, Properties driverProperties) {
     this.driver = driver;
     this.url = url;
     this.driverProperties = driverProperties;
   }
+<<<<<<< HEAD
 
+=======
+  // 也可以传驱动类加载器
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   public UnpooledDataSource(ClassLoader driverClassLoader, String driver, String url, String username, String password) {
     this.driverClassLoader = driverClassLoader;
     this.driver = driver;
@@ -82,7 +126,11 @@ public class UnpooledDataSource implements DataSource {
     this.username = username;
     this.password = password;
   }
+<<<<<<< HEAD
 
+=======
+  // 多种选择
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   public UnpooledDataSource(ClassLoader driverClassLoader, String driver, String url, Properties driverProperties) {
     this.driverClassLoader = driverClassLoader;
     this.driver = driver;
@@ -100,6 +148,13 @@ public class UnpooledDataSource implements DataSource {
     return doGetConnection(username, password);
   }
 
+<<<<<<< HEAD
+=======
+  /**
+   * 设置驱动推出时间
+   * @param loginTimeout
+   */
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   @Override
   public void setLoginTimeout(int loginTimeout) {
     DriverManager.setLoginTimeout(loginTimeout);
@@ -193,7 +248,11 @@ public class UnpooledDataSource implements DataSource {
 
   /**
    * Sets the default network timeout value to wait for the database operation to complete. See {@link Connection#setNetworkTimeout(java.util.concurrent.Executor, int)}
+<<<<<<< HEAD
    * 
+=======
+   *
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
    * @param defaultNetworkTimeout
    *          The time in milliseconds to wait for the database operation to complete.
    * @since 3.5.2
@@ -217,12 +276,24 @@ public class UnpooledDataSource implements DataSource {
   }
 
   private Connection doGetConnection(Properties properties) throws SQLException {
+<<<<<<< HEAD
     initializeDriver();
     Connection connection = DriverManager.getConnection(url, properties);
     configureConnection(connection);
     return connection;
   }
 
+=======
+    // 初始化驱动
+    initializeDriver();
+    // 创建连接
+    Connection connection = DriverManager.getConnection(url, properties);
+    // 配置连接
+    configureConnection(connection);
+    return connection;
+  }
+  // 这是个同步方法
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   private synchronized void initializeDriver() throws SQLException {
     if (!registeredDrivers.containsKey(driver)) {
       Class<?> driverType;
@@ -230,12 +301,22 @@ public class UnpooledDataSource implements DataSource {
         if (driverClassLoader != null) {
           driverType = Class.forName(driver, true, driverClassLoader);
         } else {
+<<<<<<< HEAD
+=======
+          // io里面用到的Resource类，之前过流程的时候非常眼熟，不过还没有看到
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
           driverType = Resources.classForName(driver);
         }
         // DriverManager requires the driver to be loaded via the system ClassLoader.
         // http://www.kfu.com/~nsayer/Java/dyn-jdbc.html
         Driver driverInstance = (Driver)driverType.newInstance();
+<<<<<<< HEAD
         DriverManager.registerDriver(new DriverProxy(driverInstance));
+=======
+        // Driver注册了代理，看来有某种增强壮阳在里面，看了源码也没啥变化，就加了个日志
+        DriverManager.registerDriver(new DriverProxy(driverInstance));
+        // 上面是在java.sql的驱动管理器里注册了，下面是全局的驱动注册器，也要注册
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
         registeredDrivers.put(driver, driverInstance);
       } catch (Exception e) {
         throw new SQLException("Error setting driver on UnpooledDataSource. Cause: " + e);
@@ -243,6 +324,10 @@ public class UnpooledDataSource implements DataSource {
     }
   }
 
+<<<<<<< HEAD
+=======
+  // 设置超时时间  自动提交   默认事务隔离级别等参数
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   private void configureConnection(Connection conn) throws SQLException {
     if (defaultNetworkTimeout != null) {
       conn.setNetworkTimeout(Executors.newSingleThreadExecutor(), defaultNetworkTimeout);

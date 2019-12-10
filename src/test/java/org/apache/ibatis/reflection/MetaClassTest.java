@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+<<<<<<< HEAD
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,13 +31,21 @@ import java.util.*;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.ibatis.domain.misc.CustomBeanWrapperFactory;
+=======
+import java.util.List;
+import java.util.Map;
+
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
 import org.apache.ibatis.domain.misc.RichType;
 import org.apache.ibatis.domain.misc.generics.GenericConcrete;
 import org.junit.jupiter.api.Test;
 
+<<<<<<< HEAD
 import javax.swing.*;
 import javax.xml.ws.Holder;
 
+=======
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
 class MetaClassTest {
 
   @Test
@@ -112,7 +121,11 @@ class MetaClassTest {
     assertEquals(List.class, meta.getGetterType("richList[0]"));
 
     assertEquals(RichType.class, meta.getGetterType("richType"));
+<<<<<<< HEAD
     assertEquals(String.class, meta.getGetterType("richType.parametersMap"));
+=======
+    assertEquals(String.class, meta.getGetterType("richType.richField"));
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     assertEquals(String.class, meta.getGetterType("richType.richProperty"));
     assertEquals(List.class, meta.getGetterType("richType.richList"));
     assertEquals(Map.class, meta.getGetterType("richType.richMap"));
@@ -152,6 +165,7 @@ class MetaClassTest {
     assertEquals("richField", meta.findProperty("RICHfield"));
   }
 
+<<<<<<< HEAD
   @Test
   void testParameterizedType() {
     Field[] fields = ParameterizedTypeBean.class.getDeclaredFields();
@@ -241,4 +255,6 @@ class MetaClassTest {
     System.out.println(clazz);
   }
 
+=======
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
 }

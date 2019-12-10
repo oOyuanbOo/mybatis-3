@@ -21,6 +21,15 @@ import org.apache.ibatis.logging.LogFactory;
 
 /**
  * @author Clinton Begin
+<<<<<<< HEAD
+=======
+ * 各种装饰器，功能增强，有点代理模式的味道
+ * 代理模式和装饰模式的区别是
+ * 代理模式是利用委托类的某个功能实现自己的功能
+ * 装饰模式是扩展委托类的某个功能，也要兼顾其他功能，本质上还是委托类，比如这里
+ * LoggingCache实现了Cache，并且成员变量也是Cache
+ * 代理模式就不用实现Cache接口
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
  */
 public class LoggingCache implements Cache {
 

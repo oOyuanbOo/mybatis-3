@@ -60,18 +60,34 @@ public class DefaultParameterHandler implements ParameterHandler {
 
   @Override
   public void setParameters(PreparedStatement ps) {
+<<<<<<< HEAD
     ErrorContext.instance().activity("setting parameters").object(mappedStatement.getParameterMap().getId());
+=======
+    // 看方法名称应该就是准备参数环节了吧
+    ErrorContext.instance().activity("setting parameters").object(mappedStatement.getParameterMap().getId());
+    // 先获取到参数名的列表
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
     if (parameterMappings != null) {
       for (int i = 0; i < parameterMappings.size(); i++) {
         ParameterMapping parameterMapping = parameterMappings.get(i);
+<<<<<<< HEAD
         if (parameterMapping.getMode() != ParameterMode.OUT) {
           Object value;
           String propertyName = parameterMapping.getProperty();
+=======
+        // 这个mode是个啥子哟
+        if (parameterMapping.getMode() != ParameterMode.OUT) {
+          Object value;
+          // 参数名
+          String propertyName = parameterMapping.getProperty();
+          // 这个附加的参数是个啥子哟
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
           if (boundSql.hasAdditionalParameter(propertyName)) { // issue #448 ask first for additional params
             value = boundSql.getAdditionalParameter(propertyName);
           } else if (parameterObject == null) {
             value = null;
+<<<<<<< HEAD
           } else if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
             value = parameterObject;
           } else {
@@ -79,11 +95,28 @@ public class DefaultParameterHandler implements ParameterHandler {
             value = metaObject.getValue(propertyName);
           }
           TypeHandler typeHandler = parameterMapping.getTypeHandler();
+=======
+            // 如果类型控制器里面有参数值类型的控制器，那么value就指向参数值
+          } else if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
+            value = parameterObject;
+          } else {
+            // 否则就把参数值包装成元对象
+            MetaObject metaObject = configuration.newMetaObject(parameterObject);
+            value = metaObject.getValue(propertyName);
+          }
+          // 类型控制器
+          TypeHandler typeHandler = parameterMapping.getTypeHandler();
+          // 数据库类型
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
           JdbcType jdbcType = parameterMapping.getJdbcType();
           if (value == null && jdbcType == null) {
             jdbcType = configuration.getJdbcTypeForNull();
           }
           try {
+<<<<<<< HEAD
+=======
+            // 类型控制器设置参数 依次是预编译会话， 下标， 参数值， 数据库类型
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
             typeHandler.setParameter(ps, i + 1, value, jdbcType);
           } catch (TypeException | SQLException e) {
             throw new TypeException("Could not set parameters for mapping: " + parameterMapping + ". Cause: " + e, e);

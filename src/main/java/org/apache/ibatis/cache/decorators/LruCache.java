@@ -24,6 +24,12 @@ import org.apache.ibatis.cache.Cache;
  * Lru (least recently used) cache decorator.
  *
  * @author Clinton Begin
+<<<<<<< HEAD
+=======
+ * 老朋友LRU，最近最久未使用淘汰算法
+ * 这里面结合了一个Map，我感觉应该是HashMap，因为它自带的removeEldest方法
+ * 看看吧
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
  */
 public class LruCache implements Cache {
 
@@ -47,6 +53,7 @@ public class LruCache implements Cache {
   }
 
   public void setSize(final int size) {
+<<<<<<< HEAD
     keyMap = new LinkedHashMap<Object, Object>(size, .75F, true) {
       private static final long serialVersionUID = 4267176411845948333L;
 
@@ -56,6 +63,24 @@ public class LruCache implements Cache {
         if (tooBig) {
           eldestKey = eldest.getKey();
         }
+=======
+    // keyMap 和我想的差不多，LinkedHashMap 由链表和数组构成的强大集合
+    // 比较大的一个map，可能考虑到扩容的性能损耗，负载因子0.75
+    keyMap = new LinkedHashMap<Object, Object>(size, .75F, true) {
+      private static final long serialVersionUID = 4267176411845948333L;
+
+      // 这里重写lru方法
+      // 原理是LinkedHashMap如果参数accessOrder为true，插入修改后，会调用回调方法，里面会去判断这个方法
+      @Override
+      protected boolean removeEldestEntry(Map.Entry<Object, Object> eldest) {
+        // map存放的数据超过初始大小
+        boolean tooBig = size() > size;
+        if (tooBig) {
+          // 指向最大的那个key
+          eldestKey = eldest.getKey();
+        }
+        // 返回结果
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
         return tooBig;
       }
     };

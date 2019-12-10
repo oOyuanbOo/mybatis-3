@@ -28,6 +28,10 @@ public class InterceptorChain {
 
   public Object pluginAll(Object target) {
     for (Interceptor interceptor : interceptors) {
+<<<<<<< HEAD
+=======
+      // 责任链说白了就是代理的代理，这里就很直白的表现出来了，帅！
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       target = interceptor.plugin(target);
     }
     return target;

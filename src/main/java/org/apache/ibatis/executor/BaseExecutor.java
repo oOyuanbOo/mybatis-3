@@ -129,6 +129,21 @@ public abstract class BaseExecutor implements Executor {
     return doFlushStatements(isRollBack);
   }
 
+<<<<<<< HEAD
+=======
+  /**
+   * 从MapperProxy的invoke方法一路走到这里
+   * 1.2.2.1.1
+   * 这里看到了除了MappedStatement SQLSource之外的另一个重要对象  BoundSql
+   * @param ms
+   * @param parameter
+   * @param rowBounds
+   * @param resultHandler
+   * @param <E>
+   * @return
+   * @throws SQLException
+   */
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
     BoundSql boundSql = ms.getBoundSql(parameter);
@@ -153,6 +168,10 @@ public abstract class BaseExecutor implements Executor {
       if (list != null) {
         handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);
       } else {
+<<<<<<< HEAD
+=======
+        // 缓存中没有查到，就从数据库里找
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
         list = queryFromDatabase(ms, parameter, rowBounds, resultHandler, key, boundSql);
       }
     } finally {
@@ -319,8 +338,15 @@ public abstract class BaseExecutor implements Executor {
 
   private <E> List<E> queryFromDatabase(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException {
     List<E> list;
+<<<<<<< HEAD
     localCache.putObject(key, EXECUTION_PLACEHOLDER);
     try {
+=======
+    // 先存到缓存里
+    localCache.putObject(key, EXECUTION_PLACEHOLDER);
+    try {
+      // 执行查询
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       list = doQuery(ms, parameter, rowBounds, resultHandler, boundSql);
     } finally {
       localCache.removeObject(key);

@@ -22,12 +22,38 @@ import java.util.Properties;
  */
 public interface Interceptor {
 
+<<<<<<< HEAD
   Object intercept(Invocation invocation) throws Throwable;
 
   default Object plugin(Object target) {
     return Plugin.wrap(target, this);
   }
 
+=======
+  /**
+   * 核心方法，会覆盖原来的方法，invocation是个拦截器，它实现的invoke最终实现增强
+   * @param invocation
+   * @return
+   * @throws Throwable
+   */
+  Object intercept(Invocation invocation) throws Throwable;
+
+  /**
+   * 这个相当于bind，创建代理对象，target是委托类
+   * @param target
+   * @return
+   */
+  default Object plugin(Object target) {
+    // 这里就相当于创建构造器，这里面调用Plugin，然后Plugin再返回代理对象，这个叫啥模式，相当于Plugin是更详细的一层处理
+    // 而且还会把plugin中的invoke传给代理类，然后plugin的invoke又调用回来去执行intercept方法
+    return Plugin.wrap(target, this);
+  }
+
+  /**
+   * 初始化插件的时候，设置一些参数
+   * @param properties
+   */
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   default void setProperties(Properties properties) {
     // NOP
   }

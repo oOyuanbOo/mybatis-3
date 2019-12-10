@@ -63,6 +63,10 @@ class SqlSessionTest extends BaseDataTest {
 
   @BeforeAll
   static void setup() throws Exception {
+<<<<<<< HEAD
+=======
+    // 开源库自己创建了内嵌的数据库，棒棒
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     createBlogDataSource();
     final String resource = "org/apache/ibatis/builder/MapperConfig.xml";
     final Reader reader = Resources.getResourceAsReader(resource);

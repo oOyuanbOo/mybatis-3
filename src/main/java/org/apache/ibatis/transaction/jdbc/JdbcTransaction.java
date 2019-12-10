@@ -39,9 +39,27 @@ public class JdbcTransaction implements Transaction {
 
   private static final Log log = LogFactory.getLog(JdbcTransaction.class);
 
+<<<<<<< HEAD
   protected Connection connection;
   protected DataSource dataSource;
   protected TransactionIsolationLevel level;
+=======
+  /**
+   * 数据库连接
+   */
+  protected Connection connection;
+  /**
+   * 数据源
+   */
+  protected DataSource dataSource;
+  /**
+   * 个立即被
+   */
+  protected TransactionIsolationLevel level;
+  /**
+   * 自动提交
+   */
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   protected boolean autoCommit;
 
   public JdbcTransaction(DataSource ds, TransactionIsolationLevel desiredLevel, boolean desiredAutoCommit) {
@@ -132,6 +150,7 @@ public class JdbcTransaction implements Transaction {
   }
 
   protected void openConnection() throws SQLException {
+<<<<<<< HEAD
     if (log.isDebugEnabled()) {
       log.debug("Opening JDBC Connection");
     }
@@ -139,6 +158,19 @@ public class JdbcTransaction implements Transaction {
     if (level != null) {
       connection.setTransactionIsolation(level.getLevel());
     }
+=======
+    // 这个要学习一下，判断log是否开启了debug
+    if (log.isDebugEnabled()) {
+      log.debug("Opening JDBC Connection");
+    }
+    // DataSource获取连接，你要是用连接池，就不一样了
+    connection = dataSource.getConnection();
+    if (level != null) {
+      // 设置事务隔离级别
+      connection.setTransactionIsolation(level.getLevel());
+    }
+    // 设置自动提交
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     setDesiredAutoCommit(autoCommit);
   }
 

@@ -30,6 +30,11 @@ import org.apache.ibatis.io.Resources;
 
 /**
  * @author Clinton Begin
+<<<<<<< HEAD
+=======
+ * 序列化缓存
+ * 看看怎么序列化的
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
  */
 public class SerializedCache implements Cache {
 
@@ -51,13 +56,27 @@ public class SerializedCache implements Cache {
 
   @Override
   public void putObject(Object key, Object object) {
+<<<<<<< HEAD
     if (object == null || object instanceof Serializable) {
+=======
+    // 要存的数据首先是实现了序列化接口
+    if (object == null || object instanceof Serializable) {
+      // 存的也是序列化之后的字节数组
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       delegate.putObject(key, serialize((Serializable) object));
     } else {
       throw new CacheException("SharedCache failed to make a copy of a non-serializable object: " + object);
     }
   }
 
+<<<<<<< HEAD
+=======
+  /**
+   * get自然就反过来，反序列化
+   * @param key The key
+   * @return
+   */
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   @Override
   public Object getObject(Object key) {
     Object object = delegate.getObject(key);
@@ -87,8 +106,16 @@ public class SerializedCache implements Cache {
   private byte[] serialize(Serializable value) {
     try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
          ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+<<<<<<< HEAD
       oos.writeObject(value);
       oos.flush();
+=======
+      // 用字节流读取value中的数据
+      oos.writeObject(value);
+      // 从缓冲区刷新到流中
+      oos.flush();
+      // 获取字节数组
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       return bos.toByteArray();
     } catch (Exception e) {
       throw new CacheException("Error serializing object.  Cause: " + e, e);
@@ -98,6 +125,10 @@ public class SerializedCache implements Cache {
   private Serializable deserialize(byte[] value) {
     Serializable result;
     try (ByteArrayInputStream bis = new ByteArrayInputStream(value);
+<<<<<<< HEAD
+=======
+         // 用的下面重写的一个CustomObjectInputStream
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
          ObjectInputStream ois = new CustomObjectInputStream(bis)) {
       result = (Serializable) ois.readObject();
     } catch (Exception e) {
@@ -112,6 +143,10 @@ public class SerializedCache implements Cache {
       super(in);
     }
 
+<<<<<<< HEAD
+=======
+    // 这里这个重写的方法，会从上下文中加载这个序列化后的类
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     @Override
     protected Class<?> resolveClass(ObjectStreamClass desc) throws ClassNotFoundException {
       return Resources.classForName(desc.getName());

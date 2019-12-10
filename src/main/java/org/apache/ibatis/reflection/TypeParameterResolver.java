@@ -44,9 +44,24 @@ public class TypeParameterResolver {
    * @return The return type of the method as {@link Type}. If it has type parameters in the declaration,<br>
    *         they will be resolved to the actual runtime {@link Type}s.
    */
+<<<<<<< HEAD
   public static Type resolveReturnType(Method method, Type srcType) {
     Type returnType = method.getGenericReturnType();
     Class<?> declaringClass = method.getDeclaringClass();
+=======
+  /**
+   * 俩参数，一个是穿过的get或者set方法，另一个是外面的CLass
+   * @param method
+   * @param srcType
+   * @return
+   */
+  public static Type resolveReturnType(Method method, Type srcType) {
+    // 获取泛型
+    Type returnType = method.getGenericReturnType();
+    // 方法的返回类型
+    Class<?> declaringClass = method.getDeclaringClass();
+    // 处理类型，麻痹的，以前以为只有一种类型，就是Class<?>，搞半天这么多的类型，Fuuk
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     return resolveType(returnType, srcType, declaringClass);
   }
 
@@ -64,7 +79,15 @@ public class TypeParameterResolver {
     return result;
   }
 
+<<<<<<< HEAD
   private static Type resolveType(Type type, Type srcType, Class<?> declaringClass) {
+=======
+  private static Type resolveType(Type type, // 方法返回的泛型
+                                  Type srcType,  // 方法所在类
+                                  Class<?> declaringClass   // 方法声明返回的实际类
+  ) {
+    // 类型变量，就是泛型的<?>这个?
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     if (type instanceof TypeVariable) {
       return resolveTypeVar((TypeVariable<?>) type, srcType, declaringClass);
     } else if (type instanceof ParameterizedType) {
@@ -133,6 +156,16 @@ public class TypeParameterResolver {
     return result;
   }
 
+<<<<<<< HEAD
+=======
+  /**
+   * 这一块的内容得先把那篇博客看明白了再说哦，类型确实有些操蛋
+   * @param typeVar
+   * @param srcType
+   * @param declaringClass
+   * @return
+   */
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   private static Type resolveTypeVar(TypeVariable<?> typeVar, Type srcType, Class<?> declaringClass) {
     Type result;
     Class<?> clazz;

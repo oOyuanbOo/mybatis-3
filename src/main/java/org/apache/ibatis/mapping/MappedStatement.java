@@ -293,7 +293,18 @@ public final class MappedStatement {
     return resultSets;
   }
 
+<<<<<<< HEAD
   public BoundSql getBoundSql(Object parameterObject) {
+=======
+
+  /**
+   * 执行流程，看看boundSql是如何构建的
+   * @param parameterObject
+   * @return
+   */
+  public BoundSql getBoundSql(Object parameterObject) {
+    // 到StaticSqlSource中去new
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     BoundSql boundSql = sqlSource.getBoundSql(parameterObject);
     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
     if (parameterMappings == null || parameterMappings.isEmpty()) {

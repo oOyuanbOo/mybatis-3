@@ -44,6 +44,14 @@ import org.apache.ibatis.session.SqlSession;
  * @author Lasse Voss
  * @author Kazuki Shimizu
  */
+<<<<<<< HEAD
+=======
+
+/**
+ * 从MapperProxy类的invoke方法进入到这个类的execute方法
+ * 这个类的作用应该是根据sqlComand属性来选择执行增删改查的方式
+ */
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
 public class MapperMethod {
 
   private final SqlCommand command;
@@ -54,6 +62,15 @@ public class MapperMethod {
     this.method = new MethodSignature(config, mapperInterface, method);
   }
 
+<<<<<<< HEAD
+=======
+  /**
+   * 1.2.1 进入到sql的执行阶段
+   * @param sqlSession
+   * @param args
+   * @return
+   */
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   public Object execute(SqlSession sqlSession, Object[] args) {
     Object result;
     switch (command.getType()) {
@@ -83,7 +100,14 @@ public class MapperMethod {
         } else if (method.returnsCursor()) {
           result = executeForCursor(sqlSession, args);
         } else {
+<<<<<<< HEAD
           Object param = method.convertArgsToSqlCommandParam(args);
+=======
+          // select 这里根据method的返回分了几种情形，来看一下这一种
+          // 1.2.1 将参数转成map，有Param注解的包装成<param参数，value>，没有<index，value>
+          Object param = method.convertArgsToSqlCommandParam(args);
+          // 1.2.2 command 是本类的构造函数中初始化的，common.getName()就是Statement的id，也就mapper中的接口
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
           result = sqlSession.selectOne(command.getName(), param);
           if (method.returnsOptional()
               && (result == null || !method.getReturnType().equals(result.getClass()))) {
@@ -216,14 +240,29 @@ public class MapperMethod {
 
   }
 
+<<<<<<< HEAD
+=======
+  /**
+   * SqlCommand也是MapperMethod的内部类
+   */
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   public static class SqlCommand {
 
     private final String name;
     private final SqlCommandType type;
 
     public SqlCommand(Configuration configuration, Class<?> mapperInterface, Method method) {
+<<<<<<< HEAD
       final String methodName = method.getName();
       final Class<?> declaringClass = method.getDeclaringClass();
+=======
+      // 方法名
+      final String methodName = method.getName();
+      // getDeclaringClass 方法所属的类，getClass获取到的是反射包的Method类
+      final Class<?> declaringClass = method.getDeclaringClass();
+      // MappedStatement 这是个重要对象，看看它怎么实现的
+      // 一路找到XMLStatementBuilder 113行，终于找到这个MappedStatement怎么来的了
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       MappedStatement ms = resolveMappedStatement(mapperInterface, methodName, declaringClass,
           configuration);
       if (ms == null) {
@@ -251,14 +290,36 @@ public class MapperMethod {
       return type;
     }
 
+<<<<<<< HEAD
     private MappedStatement resolveMappedStatement(Class<?> mapperInterface, String methodName,
         Class<?> declaringClass, Configuration configuration) {
       String statementId = mapperInterface.getName() + "." + methodName;
+=======
+    /**
+     * 247行过来的，看看怎么构造这个MappedStatement
+     * @param mapperInterface
+     * @param methodName
+     * @param declaringClass
+     * @param configuration
+     * @return
+     */
+    private MappedStatement resolveMappedStatement(Class<?> mapperInterface, String methodName,
+        Class<?> declaringClass, Configuration configuration) {
+      // statementId 是mapper接口名 + 方法
+      String statementId = mapperInterface.getName() + "." + methodName;
+      // 从configuration中获取这个类，那么应该是初始化的时候从config中实现的
+      // 一路回溯到XMLConfigBuilder类中，在parseConfiguration方法中找到初始类 20191116
+      // MapperStatement储存着一个增删改查节点的信息
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       if (configuration.hasStatement(statementId)) {
         return configuration.getMappedStatement(statementId);
       } else if (mapperInterface.equals(declaringClass)) {
         return null;
       }
+<<<<<<< HEAD
+=======
+      // 再往上找
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       for (Class<?> superInterface : mapperInterface.getInterfaces()) {
         if (declaringClass.isAssignableFrom(superInterface)) {
           MappedStatement ms = resolveMappedStatement(superInterface, methodName,
@@ -270,6 +331,17 @@ public class MapperMethod {
       }
       return null;
     }
+<<<<<<< HEAD
+=======
+
+ /*   public static void main(String[] args) throws NoSuchMethodException {
+      Method size = new HashMap<>().getClass().getMethod("size");
+      System.out.println(size.getDeclaringClass());
+      System.out.println(size.getClass());
+
+      System.out.println(11);
+    }*/
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   }
 
   public static class MethodSignature {

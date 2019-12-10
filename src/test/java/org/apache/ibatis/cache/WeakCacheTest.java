@@ -24,32 +24,48 @@ import org.apache.ibatis.cache.decorators.WeakCache;
 import org.apache.ibatis.cache.impl.PerpetualCache;
 import org.junit.jupiter.api.Test;
 
+<<<<<<< HEAD
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
+=======
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
 class WeakCacheTest {
 
   @Test
   void shouldDemonstrateObjectsBeingCollectedAsNeeded() {
+<<<<<<< HEAD
     long t1 = System.currentTimeMillis();
     final int N = 30000;
     WeakCache cache = new WeakCache(new PerpetualCache("default"));
     for (int i = 0; i < N; i++) {
       cache.putObject(i, i);
       cache.getObject(i);
+=======
+    final int N = 3000000;
+    WeakCache cache = new WeakCache(new PerpetualCache("default"));
+    for (int i = 0; i < N; i++) {
+      cache.putObject(i, i);
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       if (cache.getSize() < i + 1) {
         // System.out.println("Cache exceeded with " + (i + 1) + " entries.");
         break;
       }
       if ((i + 1) % 100000 == 0) {
         // Try performing GC.
+<<<<<<< HEAD
       }
     }
     System.gc();
     System.out.println(cache.getSize());
     System.out.println(System.currentTimeMillis() - t1);
     cache.clear();
+=======
+        System.gc();
+      }
+    }
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     assertTrue(cache.getSize() < N);
   }
 
@@ -59,6 +75,7 @@ class WeakCacheTest {
     cache = new SerializedCache(cache);
     for (int i = 0; i < 1000; i++) {
       cache.putObject(i, i);
+<<<<<<< HEAD
 //      if (i % 50 == 0) {
 //        System.gc();
 //      }
@@ -88,6 +105,11 @@ class WeakCacheTest {
     }
 
 
+=======
+      Object value = cache.getObject(i);
+      assertTrue(value == null || value.equals(i));
+    }
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   }
 
   @Test

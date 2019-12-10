@@ -22,7 +22,10 @@ import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 
 /**
  * @author Clinton Begin
+<<<<<<< HEAD
  * 系统级的MetaObject对象，主要提供ObjectFactory、ObjectWrapperFactory、空MetaObject的单例
+=======
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
  */
 public final class SystemMetaObject {
 

@@ -589,6 +589,10 @@ public class Configuration {
   }
 
   public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
+<<<<<<< HEAD
+=======
+    // 里面的实现并不是直接重写接口的方法，而是通过代理又做了一层包装，根据statement的类型，创建不同的StatementHandler（适配器模式）
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     StatementHandler statementHandler = new RoutingStatementHandler(executor, mappedStatement, parameterObject, rowBounds, resultHandler, boundSql);
     statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);
     return statementHandler;
@@ -598,6 +602,15 @@ public class Configuration {
     return newExecutor(transaction, defaultExecutorType);
   }
 
+<<<<<<< HEAD
+=======
+  /**
+   * 在这里创建了Executor，可见COnfiguration这个类真的是通栏全局
+   * @param transaction
+   * @param executorType
+   * @return
+   */
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   public Executor newExecutor(Transaction transaction, ExecutorType executorType) {
     executorType = executorType == null ? defaultExecutorType : executorType;
     executorType = executorType == null ? ExecutorType.SIMPLE : executorType;
@@ -607,11 +620,20 @@ public class Configuration {
     } else if (ExecutorType.REUSE == executorType) {
       executor = new ReuseExecutor(this, transaction);
     } else {
+<<<<<<< HEAD
+=======
+      // exector 执行器，根据父类接口的声明方法，可以看出里面是一些执行sql的功能
+      // 而这个SimpleExecutor就输入比较简单的执行器，隐藏了父类的很多细节
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       executor = new SimpleExecutor(this, transaction);
     }
     if (cacheEnabled) {
       executor = new CachingExecutor(executor);
     }
+<<<<<<< HEAD
+=======
+    // 这里看到了plugin的身影，说明这里可以被插件拦截
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     executor = (Executor) interceptorChain.pluginAll(executor);
     return executor;
   }

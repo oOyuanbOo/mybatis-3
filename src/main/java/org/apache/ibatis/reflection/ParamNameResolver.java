@@ -28,9 +28,12 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
+<<<<<<< HEAD
 /**
  * 参数名解析器
  */
+=======
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
 public class ParamNameResolver {
 
   private static final String GENERIC_NAME_PREFIX = "param";
@@ -53,9 +56,13 @@ public class ParamNameResolver {
   private boolean hasParamAnnotation;
 
   public ParamNameResolver(Configuration config, Method method) {
+<<<<<<< HEAD
     // 获取参数的类型数组
     final Class<?>[] paramTypes = method.getParameterTypes();
     // 获取方法参数的注解数组，所以是二维的
+=======
+    final Class<?>[] paramTypes = method.getParameterTypes();
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     final Annotation[][] paramAnnotations = method.getParameterAnnotations();
     final SortedMap<Integer, String> map = new TreeMap<>();
     int paramCount = paramAnnotations.length;
@@ -86,7 +93,10 @@ public class ParamNameResolver {
       }
       map.put(paramIndex, name);
     }
+<<<<<<< HEAD
     // 创建一个只读的map
+=======
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     names = Collections.unmodifiableSortedMap(map);
   }
 
@@ -112,6 +122,7 @@ public class ParamNameResolver {
    * In addition to the default names, this method also adds the generic names (param1, param2,
    * ...).
    * </p>
+<<<<<<< HEAD
    * 获取参数名与值的映射
    */
   public Object getNamedParams(Object[] args) {
@@ -121,6 +132,25 @@ public class ParamNameResolver {
     } else if (!hasParamAnnotation && paramCount == 1) {
       return args[names.firstKey()];
     } else {
+=======
+   */
+  /**
+   * 1.2.1.1 这里就是书里说的，如果传多个参数，没用@Param 以下标为key，值为value
+   * 否则以Param参数为key，值为value，这个方法的功能就是参数转化的
+   * @param args
+   * @return
+   */
+  public Object getNamedParams(Object[] args) {
+    // 后边不会改变的变量最好用final，尤其是接口中的常量，因为指定了实现细节，最好别去更改
+    final int paramCount = names.size();
+    if (args == null || paramCount == 0) {
+      return null;
+      // 66行，判断有没有@Param注解，没有并且参数为1，直接返回参数值
+    } else if (!hasParamAnnotation && paramCount == 1) {
+      return args[names.firstKey()];
+    } else {
+      // 有@Param注解，并且参数有多个，就包装成<Param参数名，参数值>，这里可以参照65行学习下获取参数值
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       final Map<String, Object> param = new ParamMap<>();
       int i = 0;
       for (Map.Entry<Integer, String> entry : names.entrySet()) {

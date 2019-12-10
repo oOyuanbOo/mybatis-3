@@ -34,12 +34,22 @@ import org.apache.ibatis.session.Configuration;
  * @author Clinton Begin
  * @author Simone Tripodi
  * @author Kzuki Shimizu
+<<<<<<< HEAD
+=======
+ * 开始接近大本营了，马上你之前学习到的各种工具就会浮出水面
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
  */
 public abstract class BaseTypeHandler<T> extends TypeReference<T> implements TypeHandler<T> {
 
   /**
    * @deprecated Since 3.5.0 - See https://github.com/mybatis/mybatis-3/issues/1203. This field will remove future.
    */
+<<<<<<< HEAD
+=======
+  /**
+   * 核心配置类
+   */
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   @Deprecated
   protected Configuration configuration;
 
@@ -51,13 +61,35 @@ public abstract class BaseTypeHandler<T> extends TypeReference<T> implements Typ
     this.configuration = c;
   }
 
+<<<<<<< HEAD
   @Override
   public void setParameter(PreparedStatement ps, int i, T parameter, JdbcType jdbcType) throws SQLException {
     if (parameter == null) {
+=======
+  /**
+   * 这个方法就是把javaType映射给JdbcType
+   * 说白了base主要是给祖先接口处理了null值逻辑
+   * @param ps
+   * @param i
+   * @param parameter
+   * @param jdbcType
+   * @throws SQLException
+   */
+  @Override
+  public void setParameter(PreparedStatement ps, int i, T parameter, JdbcType jdbcType) throws SQLException {
+    // 如果参数为空
+    if (parameter == null) {
+      // 如果jdbcType也为空，就要抛异常了
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       if (jdbcType == null) {
         throw new TypeException("JDBC requires that the JdbcType must be specified for all nullable parameters.");
       }
       try {
+<<<<<<< HEAD
+=======
+        // 在预编译声明里设置参数的下标i，jdbcType是null，下面异常可以看出来i就是参数的下标，
+        // 因为不指定@Param，默认就是用下标获取参数
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
         ps.setNull(i, jdbcType.TYPE_CODE);
       } catch (SQLException e) {
         throw new TypeException("Error setting null for parameter #" + i + " with JdbcType " + jdbcType + " . "
@@ -65,6 +97,10 @@ public abstract class BaseTypeHandler<T> extends TypeReference<T> implements Typ
               + "Cause: " + e, e);
       }
     } else {
+<<<<<<< HEAD
+=======
+      // 如果不为空，就设置指定参数在预编译声明中的jdbcType，这个是抽象方法，留给后面的实现类
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       try {
         setNonNullParameter(ps, i, parameter, jdbcType);
       } catch (Exception e) {

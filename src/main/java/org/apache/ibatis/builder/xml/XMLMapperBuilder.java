@@ -91,6 +91,10 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   public void parse() {
     if (!configuration.isResourceLoaded(resource)) {
+<<<<<<< HEAD
+=======
+      // 这里开始构建XMLMapper
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       configurationElement(parser.evalNode("/mapper"));
       configuration.addLoadedResource(resource);
       bindMapperForNamespace();
@@ -98,6 +102,10 @@ public class XMLMapperBuilder extends BaseBuilder {
 
     parsePendingResultMaps();
     parsePendingCacheRefs();
+<<<<<<< HEAD
+=======
+    // MapperProxy
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     parsePendingStatements();
   }
 
@@ -105,6 +113,13 @@ public class XMLMapperBuilder extends BaseBuilder {
     return sqlFragments.get(refid);
   }
 
+<<<<<<< HEAD
+=======
+  /**
+   * mapper.xml的解析开始了！！！
+   * @param context
+   */
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   private void configurationElement(XNode context) {
     try {
       String namespace = context.getStringAttribute("namespace");
@@ -112,7 +127,13 @@ public class XMLMapperBuilder extends BaseBuilder {
         throw new BuilderException("Mapper's namespace cannot be empty");
       }
       builderAssistant.setCurrentNamespace(namespace);
+<<<<<<< HEAD
       cacheRefElement(context.evalNode("cache-ref"));
+=======
+      // cache-ref 是引用别的mapper类的cache配合
+      cacheRefElement(context.evalNode("cache-ref"));
+      // cache 就是缓存了，这里是二级缓存，一级是sqlSession级别默认打开
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       cacheElement(context.evalNode("cache"));
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
       resultMapElements(context.evalNodes("/mapper/resultMap"));

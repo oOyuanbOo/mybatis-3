@@ -186,6 +186,10 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     int resultSetCount = 0;
     ResultSetWrapper rsw = getFirstResultSet(stmt);
 
+<<<<<<< HEAD
+=======
+    // 返回结果
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     List<ResultMap> resultMaps = mappedStatement.getResultMaps();
     int resultMapCount = resultMaps.size();
     validateResultMapsCount(rsw, resultMapCount);

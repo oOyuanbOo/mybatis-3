@@ -25,9 +25,22 @@ import org.apache.ibatis.session.SqlSession;
 /**
  * @author Lasse Voss
  */
+<<<<<<< HEAD
 public class MapperProxyFactory<T> {
 
   private final Class<T> mapperInterface;
+=======
+
+/**
+ * 看名字Factory是个工厂类
+ * 你这里面这俩成员变量干嘛的，再往上挖一挖
+ * @param <T>
+ */
+public class MapperProxyFactory<T> {
+
+  private final Class<T> mapperInterface;
+  // 这里的methodCachae用的是juc的并发HashMap
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   private final Map<Method, MapperMethod> methodCache = new ConcurrentHashMap<>();
 
   public MapperProxyFactory(Class<T> mapperInterface) {
@@ -48,7 +61,13 @@ public class MapperProxyFactory<T> {
   }
 
   public T newInstance(SqlSession sqlSession) {
+<<<<<<< HEAD
     final MapperProxy<T> mapperProxy = new MapperProxy<>(sqlSession, mapperInterface, methodCache);
+=======
+    // 参数里有mapperInteface，你俩从哪来的
+    final MapperProxy<T> mapperProxy = new MapperProxy<>(sqlSession, mapperInterface, methodCache);
+    // 这里调用的上面那个方法，给老弟MapperInterface直接整个代理，那么，你这个方法应该是初始化的时候搞的把
+>>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     return newInstance(mapperProxy);
   }
 
