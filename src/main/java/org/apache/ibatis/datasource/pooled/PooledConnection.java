@@ -25,7 +25,7 @@ import org.apache.ibatis.reflection.ExceptionUtil;
 
 /**
  * @author Clinton Begin
-<<<<<<< HEAD
+
  * 线程实现了jdk的动态代理，看看怎么用的，mybatis中动态代理真不少
  */
 class PooledConnection implements InvocationHandler {
@@ -47,19 +47,11 @@ class PooledConnection implements InvocationHandler {
    * 所属的 PooledDataSource 对象  这里要知道大对象之所以大，并不是成员变量是比他小的类，
    * 而是引用，组合到一起，就比如儿子类里面有个属性粑粑，并不代表爸爸是他的一个属性
    */
-=======
- */
 
 /**
  * 池化连接还用到了动态代理技术？ 看完invoke睡觉
  */
-class PooledConnection implements InvocationHandler {
 
-  private static final String CLOSE = "close";
-  private static final Class<?>[] IFACES = new Class<?>[] { Connection.class };
-
-  private final int hashCode;
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   private final PooledDataSource dataSource;
   private final Connection realConnection;
   private final Connection proxyConnection;
@@ -260,29 +252,26 @@ class PooledConnection implements InvocationHandler {
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     String methodName = method.getName();
-<<<<<<< HEAD
+
     // 调用委托类Connection的close方法的时候，会调用这个pushConnection，线程池的工作需要给connection搞个代理的原因就在这里
     // 可以在操作委托类的时候，加入线程池的逻辑
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
     if (CLOSE.hashCode() == methodName.hashCode() && CLOSE.equals(methodName)) {
       dataSource.pushConnection(this);
       return null;
     }
     try {
-<<<<<<< HEAD
+
       // 判断非Object的防反，则先检查连接是否可用
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
       if (!Object.class.equals(method.getDeclaringClass())) {
         // issue #579 toString() should never fail
         // throw an SQLException instead of a Runtime
         checkConnection();
       }
-<<<<<<< HEAD
+
       // 反射调用对应的方法
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
       return method.invoke(realConnection, args);
     } catch (Throwable t) {
       throw ExceptionUtil.unwrapThrowable(t);
