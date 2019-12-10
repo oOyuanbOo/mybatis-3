@@ -41,8 +41,7 @@ public class BoundSql {
   private final Map<String, Object> additionalParameters;
   private final MetaObject metaParameters;
 
-<<<<<<< HEAD
-=======
+
   /**
    * 这里面四大对象出现了，分别是parameterMappings，parameterObject  additionalParameters  metaParameters
    * @param configuration
@@ -50,7 +49,7 @@ public class BoundSql {
    * @param parameterMappings
    * @param parameterObject
    */
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
   public BoundSql(Configuration configuration, String sql, List<ParameterMapping> parameterMappings, Object parameterObject) {
     this.sql = sql;
     this.parameterMappings = parameterMappings;

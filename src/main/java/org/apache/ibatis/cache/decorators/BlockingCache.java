@@ -31,27 +31,21 @@ import org.apache.ibatis.cache.CacheException;
  * This way, other threads will wait until this element is filled instead of hitting the database.
  *
  * @author Eduardo Macarron
-<<<<<<< HEAD
  *
-=======
  * 给Cache加了个阻塞功能
  * 这里的阻塞比较特殊，当线程去获取缓存值时，如果不存在，则会阻塞后续的其他线程去获取该缓存。
  * 为什么这么有这样的设计呢？因为当线程 A 在获取不到缓存值时，一般会去设置对应的缓存值，
  * 这样就避免其他也需要该缓存的线程 B、C 等，重复添加缓存。
  *    BlockingCache 是阻塞版本的缓存装饰器，它保证只有一个线程到数据库中查找指定key对应的数据。
  *    你要是取到空，一般都会去数据库查，这样可以防止缓存击穿，至于你不去存，那么这个key的锁你就拿着呗
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
  */
 public class BlockingCache implements Cache {
 
   private long timeout;
   private final Cache delegate;
-<<<<<<< HEAD
-=======
   /**
    * 包含一个线程安全的map，里面是对象对应着可重入锁
    */
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   private final ConcurrentHashMap<Object, ReentrantLock> locks;
 
   public BlockingCache(Cache delegate) {
@@ -69,8 +63,6 @@ public class BlockingCache implements Cache {
     return delegate.getSize();
   }
 
-<<<<<<< HEAD
-=======
   /**
    * 缓存数据的时候不需要先去获取锁
    * 之前getObject的时候取到value为null的线程，尚未释放锁，
@@ -79,7 +71,6 @@ public class BlockingCache implements Cache {
    * @param key Can be any object but usually it is a
    * @param value The result of a select.
    */
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   @Override
   public void putObject(Object key, Object value) {
     try {
@@ -89,15 +80,6 @@ public class BlockingCache implements Cache {
     }
   }
 
-<<<<<<< HEAD
-  @Override
-  public Object getObject(Object key) {
-    acquireLock(key);
-    Object value = delegate.getObject(key);
-    if (value != null) {
-      releaseLock(key);
-    }
-=======
   /**
    * 获取数据的时候用到了锁
    * @param key The key
@@ -118,7 +100,6 @@ public class BlockingCache implements Cache {
     // 但是，如果获得缓存值失败时，就需要在 #putObject(Object key, Object value) 方法中，
     // 添加缓存时，才会释放锁，这样被阻塞等待的其它线程就不会重复添加缓存了。
     // TODO: 还是不理解，获取失败，阻塞会自旋不停尝试吗，我只看到返回value，并且value为空，没有释放锁
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     return value;
   }
 
@@ -135,54 +116,35 @@ public class BlockingCache implements Cache {
   }
 
   private ReentrantLock getLockForKey(Object key) {
-<<<<<<< HEAD
-=======
     // 又看到了computeIfAbsent，真是个高级的用法
     // 其实就是ConcurrentHashMap的一个方法，里面的实现真的牛批，巨长
     // 意思是，获取key对应的value，不然就给key赋值 k -> new ReentrantLock()
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     return locks.computeIfAbsent(key, k -> new ReentrantLock());
   }
 
   private void acquireLock(Object key) {
-<<<<<<< HEAD
-    Lock lock = getLockForKey(key);
-    if (timeout > 0) {
-      try {
-        boolean acquired = lock.tryLock(timeout, TimeUnit.MILLISECONDS);
-        if (!acquired) {
-          throw new CacheException("Couldn't get a lock in " + timeout + " for the key " +  key + " at the cache " + delegate.getId());
+        // 获取锁
+        Lock lock = getLockForKey(key);
+        // 如果设置了超时时间
+        if (timeout > 0) {
+          try {
+            // 可重入锁的超时加锁方法，避免死锁也可以用到这个方法
+            boolean acquired = lock.tryLock(timeout, TimeUnit.MILLISECONDS);
+            // 如果没获取到锁
+            if (!acquired) {
+              throw new CacheException("Couldn't get a lock in " + timeout + " for the key " + key + " at the cache " + delegate.getId());
+            }
+            // 阻塞的时候被中断，会抛出InterruptedException
+          } catch (InterruptedException e) {
+            throw new CacheException("Got interrupted while trying to acquire lock for key " + key, e);
+          }
+        } else {
+          // 没设置超时时间，直接加锁
+          lock.lock();
         }
-=======
-    // 获取锁
-    Lock lock = getLockForKey(key);
-    // 如果设置了超时时间
-    if (timeout > 0) {
-      try {
-        // 可重入锁的超时加锁方法，避免死锁也可以用到这个方法
-        boolean acquired = lock.tryLock(timeout, TimeUnit.MILLISECONDS);
-        // 如果没获取到锁
-        if (!acquired) {
-          throw new CacheException("Couldn't get a lock in " + timeout + " for the key " +  key + " at the cache " + delegate.getId());
-        }
-        // 阻塞的时候被中断，会抛出InterruptedException
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
-      } catch (InterruptedException e) {
-        throw new CacheException("Got interrupted while trying to acquire lock for key " + key, e);
-      }
-    } else {
-<<<<<<< HEAD
-=======
-      // 没设置超时时间，直接加锁
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
-      lock.lock();
-    }
   }
 
-<<<<<<< HEAD
-  private void releaseLock(Object key) {
-    ReentrantLock lock = locks.get(key);
-=======
+
   /**
    * 所以put里面其实用的是写写并行，都来写没关系，以为ConcurrentHaspMap用的是CAS写入数据
    * 不加锁，你要是值和期望不一样，就会阻塞自旋
@@ -193,7 +155,6 @@ public class BlockingCache implements Cache {
     // 释放锁的时候先去获取put的key的锁
     ReentrantLock lock = locks.get(key);
     // 如果锁被当前线程持有，那么就释放
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     if (lock.isHeldByCurrentThread()) {
       lock.unlock();
     }
