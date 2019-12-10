@@ -42,22 +42,15 @@ import org.apache.ibatis.reflection.property.PropertyNamer;
 /**
  * This class represents a cached set of class definition information that
  * allows for easy mapping between property names and getter/setter methods.
-<<<<<<< HEAD
  * 翻译下，这个类是一个把属性和get set方法映射上的缓存集合
  * 啥意思
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
  *
  * @author Clinton Begin
  */
 public class Reflector {
-<<<<<<< HEAD
   /**
    * 一堆参数
    */
-=======
-
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   private final Class<?> type;
   private final String[] readablePropertyNames;
   private final String[] writablePropertyNames;
@@ -69,7 +62,6 @@ public class Reflector {
 
   private Map<String, String> caseInsensitivePropertyMap = new HashMap<>();
 
-<<<<<<< HEAD
   /**
    * 构造函数就一个
    * @param clazz
@@ -83,13 +75,6 @@ public class Reflector {
     // 获取set方法
     addSetMethods(clazz);
     // 获取成员变量
-=======
-  public Reflector(Class<?> clazz) {
-    type = clazz;
-    addDefaultConstructor(clazz);
-    addGetMethods(clazz);
-    addSetMethods(clazz);
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     addFields(clazz);
     readablePropertyNames = getMethods.keySet().toArray(new String[0]);
     writablePropertyNames = setMethods.keySet().toArray(new String[0]);
@@ -101,29 +86,6 @@ public class Reflector {
     }
   }
 
-<<<<<<< HEAD
-  private void addDefaultConstructor(Class<?> clazz) {
-    Constructor<?>[] constructors = clazz.getDeclaredConstructors();
-    Arrays.stream(constructors).filter(constructor -> constructor.getParameterTypes().length == 0)
-      .findAny().ifPresent(constructor -> this.defaultConstructor = constructor);
-  }
-
-  private void addGetMethods(Class<?> clazz) {
-    Map<String, List<Method>> conflictingGetters = new HashMap<>();
-    Method[] methods = getClassMethods(clazz);
-    Arrays.stream(methods).filter(m -> m.getParameterTypes().length == 0 && PropertyNamer.isGetter(m.getName()))
-      .forEach(m -> addMethodConflict(conflictingGetters, PropertyNamer.methodToProperty(m.getName()), m));
-    resolveGetterConflicts(conflictingGetters);
-  }
-
-  private void resolveGetterConflicts(Map<String, List<Method>> conflictingGetters) {
-    for (Entry<String, List<Method>> entry : conflictingGetters.entrySet()) {
-=======
-  /**
-   * 大量的Stream api的函数式编程，确实简洁很多，其实也就是jquery的方式吧
-   * 我来写一下非函数式的代码，看看区别
-   * @param clazz
-   */
   private void addDefaultConstructor(Class<?> clazz) {
     Constructor<?>[] constructors = clazz.getDeclaredConstructors();
     // 数组转换为流
@@ -141,7 +103,7 @@ public class Reflector {
       .ifPresent(constructor -> this.defaultConstructor = constructor);
   }
 
-  public void addGetMethods(Class<?> clazz) {
+  private void addGetMethods(Class<?> clazz) {
     Map<String, List<Method>> conflictingGetters = new HashMap<>();
     Method[] methods = getClassMethods(clazz);
     Arrays.stream(methods)
@@ -153,16 +115,8 @@ public class Reflector {
     resolveGetterConflicts(conflictingGetters);
   }
 
-  /**
-   * 找找看谁才是正儿八经的get方法，有的是getKey 有的是getKey1， getKey2
-   * no no
-   * 源码解析里说的是子类父类都有get方法，没提get后面名字不一样的事，尬
-   * @param conflictingGetters
-   */
   private void resolveGetterConflicts(Map<String, List<Method>> conflictingGetters) {
     for (Entry<String, List<Method>> entry : conflictingGetters.entrySet()) {
-
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       Method winner = null;
       String propName = entry.getKey();
       for (Method candidate : entry.getValue()) {
@@ -172,18 +126,13 @@ public class Reflector {
         }
         Class<?> winnerType = winner.getReturnType();
         Class<?> candidateType = candidate.getReturnType();
-<<<<<<< HEAD
-        if (candidateType.equals(winnerType)) {
-=======
         // 如果俩方法返回值都一样
         if (candidateType.equals(winnerType)) {
-          //
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
           if (!boolean.class.equals(candidateType)) {
             throw new ReflectionException(
-                "Illegal overloaded getter method with ambiguous type for property "
-                    + propName + " in class " + winner.getDeclaringClass()
-                    + ". This breaks the JavaBeans specification and can cause unpredictable results.");
+              "Illegal overloaded getter method with ambiguous type for property "
+                + propName + " in class " + winner.getDeclaringClass()
+                + ". This breaks the JavaBeans specification and can cause unpredictable results.");
           } else if (candidate.getName().startsWith("is")) {
             winner = candidate;
           }
@@ -193,9 +142,9 @@ public class Reflector {
           winner = candidate;
         } else {
           throw new ReflectionException(
-              "Illegal overloaded getter method with ambiguous type for property "
-                  + propName + " in class " + winner.getDeclaringClass()
-                  + ". This breaks the JavaBeans specification and can cause unpredictable results.");
+            "Illegal overloaded getter method with ambiguous type for property "
+              + propName + " in class " + winner.getDeclaringClass()
+              + ". This breaks the JavaBeans specification and can cause unpredictable results.");
         }
       }
       addGetMethod(propName, winner);
@@ -204,13 +153,9 @@ public class Reflector {
 
   private void addGetMethod(String name, Method method) {
     if (isValidPropertyName(name)) {
-<<<<<<< HEAD
-      getMethods.put(name, new MethodInvoker(method));
-=======
       // 属性的get方法存到key里面要加工一下
       getMethods.put(name, new MethodInvoker(method));
       // 把type加工成一个Type（java.lang.reflect）实例
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       Type returnType = TypeParameterResolver.resolveReturnType(method, type);
       getTypes.put(name, typeToClass(returnType));
     }
@@ -225,10 +170,7 @@ public class Reflector {
   }
 
   private void addMethodConflict(Map<String, List<Method>> conflictingMethods, String name, Method method) {
-<<<<<<< HEAD
-=======
     // java8之后。上面的操作可以简化为一行，若key对应的value为空，会将第二个参数的返回值存入并返回
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     List<Method> list = conflictingMethods.computeIfAbsent(name, k -> new ArrayList<>());
     list.add(method);
   }
@@ -275,32 +217,19 @@ public class Reflector {
       return setter1;
     }
     throw new ReflectionException("Ambiguous setters defined for property '" + property + "' in class '"
-        + setter2.getDeclaringClass() + "' with types '" + paramType1.getName() + "' and '"
-        + paramType2.getName() + "'.");
+      + setter2.getDeclaringClass() + "' with types '" + paramType1.getName() + "' and '"
+      + paramType2.getName() + "'.");
   }
 
   private void addSetMethod(String name, Method method) {
     if (isValidPropertyName(name)) {
       setMethods.put(name, new MethodInvoker(method));
       Type[] paramTypes = TypeParameterResolver.resolveParamTypes(method, type);
-<<<<<<< HEAD
-=======
       // 难怪你搞不懂type为什么要ToClass，原来类型分了这么多
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       setTypes.put(name, typeToClass(paramTypes[0]));
     }
   }
 
-<<<<<<< HEAD
-  private Class<?> typeToClass(Type src) {
-    Class<?> result = null;
-=======
-  /**
-   * 看到这几个if，心中一万个草拟吗，什么鬼
-   * 扩展阅读了一下
-   * @param src
-   * @return
-   */
   private Class<?> typeToClass(Type src) {
     Class<?> result = null;
     // 这些都输入java-type体系的五种类型
@@ -311,7 +240,6 @@ public class Reflector {
     // GenericArrayType  数组类型，不是那个数组，而是泛型数组 List<?>[] Map<?>[]
     // TypeVariable  就是泛型中？T K V的类型
     // Class 基本类型  int long char
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     if (src instanceof Class) {
       result = (Class<?>) src;
     } else if (src instanceof ParameterizedType) {
@@ -332,15 +260,9 @@ public class Reflector {
   }
 
   private void addFields(Class<?> clazz) {
-<<<<<<< HEAD
-    Field[] fields = clazz.getDeclaredFields();
-    for (Field field : fields) {
-=======
     // getDeclared会取当前类及接口声明的所有方法，不包括继承的
     Field[] fields = clazz.getDeclaredFields();
     for (Field field : fields) {
-      // 如果属性名不在setMethods的key中
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       if (!setMethods.containsKey(field.getName())) {
         // issue #379 - removed the check for final because JDK 1.5 allows
         // modification of final fields through reflection (JSR-133). (JGB)
@@ -350,24 +272,19 @@ public class Reflector {
           addSetField(field);
         }
       }
-<<<<<<< HEAD
-=======
       // 如果属性名不在getMethods的key中，可能是那些特殊的属性
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       if (!getMethods.containsKey(field.getName())) {
         addGetField(field);
       }
     }
     if (clazz.getSuperclass() != null) {
-<<<<<<< HEAD
-=======
       // 这里递归调用保存属性
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       addFields(clazz.getSuperclass());
     }
   }
 
   private void addSetField(Field field) {
+    // 如果不是$开头的变量 序列号  class这些属性，应该是和编译后的class文件有关系
     if (isValidPropertyName(field.getName())) {
       setMethods.put(field.getName(), new SetFieldInvoker(field));
       Type fieldType = TypeParameterResolver.resolveFieldType(field, type);
@@ -376,10 +293,6 @@ public class Reflector {
   }
 
   private void addGetField(Field field) {
-<<<<<<< HEAD
-=======
-    // 如果不是$开头的变量 序列号  class这些属性，应该是和编译后的class文件有关系
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     if (isValidPropertyName(field.getName())) {
       getMethods.put(field.getName(), new GetFieldInvoker(field));
       Type fieldType = TypeParameterResolver.resolveFieldType(field, type);
@@ -399,14 +312,9 @@ public class Reflector {
    *
    * @param clazz The class
    * @return An array containing all methods in this class
-<<<<<<< HEAD
+   *  这个方法能拿到类里所有的方法，包括private，不像Class.getMethods只能拿到public
    */
   private Method[] getClassMethods(Class<?> clazz) {
-=======
-   * 这个方法能拿到类里所有的方法，包括private，不像Class.getMethods只能拿到public
-   */
-  public Method[] getClassMethods(Class<?> clazz) {
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     Map<String, Method> uniqueMethods = new HashMap<>();
     Class<?> currentClass = clazz;
     while (currentClass != null && currentClass != Object.class) {
@@ -427,12 +335,10 @@ public class Reflector {
     return methods.toArray(new Method[0]);
   }
 
-<<<<<<< HEAD
-=======
   public static void main(String[] args) {
     Reflector reflector = new Reflector(TestSon.class);
     System.out.println("=========getMethods==========");
-      Arrays.stream(TestSon.class.getMethods())  // 所有public方法，包括继承的和实现的
+    Arrays.stream(TestSon.class.getMethods())  // 所有public方法，包括继承的和实现的
       .forEach(method -> System.out.println(method.getDeclaringClass().getSimpleName() + "--" + method.getReturnType()+"#"+method.getName()));
     System.out.println("==========getDeclaredMethods=========");
     Arrays.stream(TestSon.class.getDeclaredMethods())  // 所有本类声明的方法，包括私有的保护的，不包括继承但是包括实现的
@@ -470,7 +376,7 @@ public class Reflector {
     TestSon(List list) {
       super(list);
     }
-
+    @Override
     public List getList() {
       return list;
     }
@@ -484,7 +390,6 @@ public class Reflector {
     }
   }
 
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   private void addUniqueMethods(Map<String, Method> uniqueMethods, Method[] methods) {
     for (Method currentMethod : methods) {
       if (!currentMethod.isBridge()) {
@@ -521,11 +426,8 @@ public class Reflector {
    */
   public static boolean canControlMemberAccessible() {
     try {
-<<<<<<< HEAD
-=======
       // 常用的判断方法是否私有的方式
       // 安全管理器
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       SecurityManager securityManager = System.getSecurityManager();
       if (null != securityManager) {
         securityManager.checkPermission(new ReflectPermission("suppressAccessChecks"));
