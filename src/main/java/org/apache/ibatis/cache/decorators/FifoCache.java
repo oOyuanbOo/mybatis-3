@@ -24,34 +24,24 @@ import org.apache.ibatis.cache.Cache;
  * FIFO (first in, first out) cache decorator.
  *
  * @author Clinton Begin
-<<<<<<< HEAD
-=======
  * 先进先出的装饰器
  * 看了下方法的逻辑，其实好多的数据集合都是在简单集合的基础上，结合一个功能性的模块，实现某种复杂的功能
  * 比如这里的有序队列，就给Cache带来了FIFO的功能
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
  */
 public class FifoCache implements Cache {
 
   private final Cache delegate;
-<<<<<<< HEAD
-=======
   /**
    * 双向队列
    */
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   private final Deque<Object> keyList;
   private int size;
 
   public FifoCache(Cache delegate) {
     this.delegate = delegate;
-<<<<<<< HEAD
-    this.keyList = new LinkedList<>();
-=======
     // 这里面初始化了一个有序队列存放Cache里面的key，一一对应
     this.keyList = new LinkedList<>();
     // 大小固定为1024
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     this.size = 1024;
   }
 
@@ -71,10 +61,7 @@ public class FifoCache implements Cache {
 
   @Override
   public void putObject(Object key, Object value) {
-<<<<<<< HEAD
-=======
     // 插入这个key到队列里面，这个方法会去判断队列大小，给新的key安排位置
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     cycleKeyList(key);
     delegate.putObject(key, value);
   }
@@ -96,19 +83,12 @@ public class FifoCache implements Cache {
   }
 
   private void cycleKeyList(Object key) {
-<<<<<<< HEAD
-    keyList.addLast(key);
-    if (keyList.size() > size) {
-      Object oldestKey = keyList.removeFirst();
-=======
     // 插入到尾部
     keyList.addLast(key);
     // 判断队列长度是否超过了设置的长度，若是
     if (keyList.size() > size) {
-      // 删除第一个key
       Object oldestKey = keyList.removeFirst();
       // 并且缓存对应的删除这个key对应的键值对
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       delegate.removeObject(oldestKey);
     }
   }

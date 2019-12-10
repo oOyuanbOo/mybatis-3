@@ -144,11 +144,10 @@ public class DefaultSqlSession implements SqlSession {
   public <E> List<E> selectList(String statement, Object parameter, RowBounds rowBounds) {
     try {
       MappedStatement ms = configuration.getMappedStatement(statement);
-<<<<<<< HEAD
-=======
+
       // 1.2.2.1进入到这里，发现是由executor执行下去，那么这个类是在哪里初始化的，有什么功能呢
       // executor是在Configuration中创建的，默认是simple，实现了sql执行的功能
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
       return executor.query(ms, wrapCollection(parameter), rowBounds, Executor.NO_RESULT_HANDLER);
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error querying database.  Cause: " + e, e);
@@ -291,8 +290,7 @@ public class DefaultSqlSession implements SqlSession {
     return configuration;
   }
 
-<<<<<<< HEAD
-=======
+
   /**
    * MapperProxy 1.2 找到了这里，执行的时候在找这个sqlSession的参数哪儿来的
    * 这里就看到了，是先通过SqlSessionFactoryBuilder创建SqlSessionFactory，然后openSession有了DefaultSqlSession
@@ -301,7 +299,7 @@ public class DefaultSqlSession implements SqlSession {
    * @param <T>
    * @return
    */
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
   @Override
   public <T> T getMapper(Class<T> type) {
     return configuration.getMapper(type, this);
