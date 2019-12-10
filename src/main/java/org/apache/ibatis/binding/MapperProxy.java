@@ -29,15 +29,14 @@ import org.apache.ibatis.session.SqlSession;
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
-<<<<<<< HEAD
-=======
+
 
 /**
  * sqlSession  mapperInterface   methodCache都是干哈的，有啥作用，啥时候初始化的，了解下，下面的方法用到的挺多
  * 读源码和你平时看业务代码不同，mvc就三层，这个N层，注意抓重点
  * @param <T>
  */
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
 public class MapperProxy<T> implements InvocationHandler, Serializable {
 
   private static final long serialVersionUID = -6424540398559729838L;
@@ -51,11 +50,6 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     this.methodCache = methodCache;
   }
 
-<<<<<<< HEAD
-  @Override
-  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-    try {
-=======
   /**
    * mybatis接口的执行过程
    * @param proxy
@@ -69,7 +63,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     try {
       // 如果方法所在类是Object.class 则直接执行代理方法
       // 上面是我猜的，判断方法是否继承自Object，如toString、equals等方法
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, args);
       } else if (method.isDefault()) {
@@ -78,22 +72,19 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     } catch (Throwable t) {
       throw ExceptionUtil.unwrapThrowable(t);
     }
-<<<<<<< HEAD
-    final MapperMethod mapperMethod = cachedMapperMethod(method);
-=======
+
     // 1.mapper里面的方法进入到代理类里
     //   1.1 先缓存方法
     final MapperMethod mapperMethod = cachedMapperMethod(method);
     //   1.2 执行方法
     //   上面的方法里我找了五层才找到其中用到的参数mapperInterface，现在我要去找sqlSession的出处
     //   new SqlSessionFactoryBuilder(配置文件).build会创造SqlSessionFactory，它再openSession，这个类就出来了
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
     return mapperMethod.execute(sqlSession, args);
   }
 
   private MapperMethod cachedMapperMethod(Method method) {
-<<<<<<< HEAD
-=======
+
     // 1.1 短短的一行，因为用了函数式编程，其实内容很多，读起来比较操蛋，第二个参数和我想的一样
     // 这里创建了MapperMethod类，并把类的成员变量mapperInterface，configuration传到了类中
     // 学习这些类，首先弄明白它的这些成员变量都是些什么玩意，为什么要把它们弄到这个类里，打算怎么用
@@ -110,7 +101,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
 //    <package name="org.apache.ibatis.builder.mapper"/>
 //  </mappers>
     // 我一般是用的第一种
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
     return methodCache.computeIfAbsent(method, k -> new MapperMethod(mapperInterface, method, sqlSession.getConfiguration()));
   }
 
