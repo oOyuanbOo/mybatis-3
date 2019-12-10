@@ -47,10 +47,9 @@ public class MapperRegistry {
       throw new BindingException("Type " + type + " is not known to the MapperRegistry.");
     }
     try {
-<<<<<<< HEAD
-=======
+
       // 从mapperProxy一路向上找过来，果不其然，getMapper这里生成代理类
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
       return mapperProxyFactory.newInstance(sqlSession);
     } catch (Exception e) {
       throw new BindingException("Error getting mapper instance. Cause: " + e, e);
@@ -68,10 +67,9 @@ public class MapperRegistry {
       }
       boolean loadCompleted = false;
       try {
-<<<<<<< HEAD
-=======
+
         // 从MapperProxy的invoke一路倒着追溯过来，MapperRegistry里new了这个工厂类，这个type也就是我们要找的MapperInterface了
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
         knownMappers.put(type, new MapperProxyFactory<>(type));
         // It's important that the type is added before the parser is run
         // otherwise the binding may automatically be attempted by the

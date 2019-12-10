@@ -23,13 +23,12 @@ import java.util.Properties;
  *
  * @author Clinton Begin
  */
-<<<<<<< HEAD
+
 
 /**
  * 创建指定对象
  */
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
 public interface ObjectFactory {
 
   /**
