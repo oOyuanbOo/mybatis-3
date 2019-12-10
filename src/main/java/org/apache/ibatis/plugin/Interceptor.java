@@ -21,15 +21,6 @@ import java.util.Properties;
  * @author Clinton Begin
  */
 public interface Interceptor {
-
-<<<<<<< HEAD
-  Object intercept(Invocation invocation) throws Throwable;
-
-  default Object plugin(Object target) {
-    return Plugin.wrap(target, this);
-  }
-
-=======
   /**
    * 核心方法，会覆盖原来的方法，invocation是个拦截器，它实现的invoke最终实现增强
    * @param invocation
@@ -53,7 +44,7 @@ public interface Interceptor {
    * 初始化插件的时候，设置一些参数
    * @param properties
    */
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
   default void setProperties(Properties properties) {
     // NOP
   }
