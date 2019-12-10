@@ -22,17 +22,16 @@ import org.apache.ibatis.reflection.Reflector;
 
 /**
  * @author Clinton Begin
-<<<<<<< HEAD
-=======
+
  * todo: 不知道这个类怎么用的，在MetaClass::getGenericGetterType里用到了
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
  */
 public class MethodInvoker implements Invoker {
 
   private final Class<?> type;
   private final Method method;
 
-<<<<<<< HEAD
+
   public MethodInvoker(Method method) {
     this.method = method;
     // 参数长度为1一般是set方法，返回参数类型
@@ -40,28 +39,13 @@ public class MethodInvoker implements Invoker {
       type = method.getParameterTypes()[0];
     } else {
       // 参数为空一般是get方法，返回类型
-=======
   // 构造方法存了一个method类
   // 把有一个参数的方法的参数类型存了下来
   // 以及无参的返回类型
-  public MethodInvoker(Method method) {
-    this.method = method;
-
-    if (method.getParameterTypes().length == 1) {
-      type = method.getParameterTypes()[0];
-    } else {
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       type = method.getReturnType();
     }
   }
 
-<<<<<<< HEAD
-  @Override
-  public Object invoke(Object target, Object[] args) throws IllegalAccessException, InvocationTargetException {
-    try {
-      return method.invoke(target, args);
-    } catch (IllegalAccessException e) {
-=======
   /**
    * 这个方法大概就是这个用处，那个地方需要反射去执行，并且要用上type
    * @param target
@@ -78,7 +62,7 @@ public class MethodInvoker implements Invoker {
     } catch (IllegalAccessException e) {
       // 如果是私有方法，反射执行会抛出IllegalAccessException，这时候直接
       // 使用setAccessible(true)暴力访问就可以了，牛批
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
       if (Reflector.canControlMemberAccessible()) {
         method.setAccessible(true);
         return method.invoke(target, args);
