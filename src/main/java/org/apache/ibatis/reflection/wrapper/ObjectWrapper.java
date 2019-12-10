@@ -24,14 +24,13 @@ import org.apache.ibatis.reflection.property.PropertyTokenizer;
 /**
  * @author Clinton Begin
  */
-<<<<<<< HEAD
+
 
 /**
  * 感觉又是一个外骨骼
  * 对象包装器接口
  */
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
 public interface ObjectWrapper {
 
   Object get(PropertyTokenizer prop);
