@@ -24,23 +24,32 @@ import org.apache.ibatis.cache.decorators.WeakCache;
 import org.apache.ibatis.cache.impl.PerpetualCache;
 import org.junit.jupiter.api.Test;
 
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+
 class WeakCacheTest {
 
   @Test
   void shouldDemonstrateObjectsBeingCollectedAsNeeded() {
-    final int N = 3000000;
+    long t1 = System.currentTimeMillis();
+    final int N = 30000;
     WeakCache cache = new WeakCache(new PerpetualCache("default"));
     for (int i = 0; i < N; i++) {
       cache.putObject(i, i);
+      cache.getObject(i);
       if (cache.getSize() < i + 1) {
         // System.out.println("Cache exceeded with " + (i + 1) + " entries.");
         break;
       }
       if ((i + 1) % 100000 == 0) {
         // Try performing GC.
-        System.gc();
       }
     }
+    System.gc();
+    System.out.println(cache.getSize());
+    System.out.println(System.currentTimeMillis() - t1);
+    cache.clear();
     assertTrue(cache.getSize() < N);
   }
 
@@ -50,9 +59,35 @@ class WeakCacheTest {
     cache = new SerializedCache(cache);
     for (int i = 0; i < 1000; i++) {
       cache.putObject(i, i);
+//      if (i % 50 == 0) {
+//        System.gc();
+//      }
       Object value = cache.getObject(i);
       assertTrue(value == null || value.equals(i));
     }
+    System.gc();
+    System.out.println(cache.getSize());
+
+  }
+
+  @Test
+  void testWeakReference() {
+//    ReferenceQueue<Object> referenceQueue = new ReferenceQueue<>();
+//    WeakReference<String> wee = new WeakReference<String>("1");
+    int SIZE = 500000;
+    HashMap<Integer, WeakReference<Integer>> map = new HashMap<>();
+    for (int i = 0; i < SIZE; i++) {
+      map.put(i, new WeakReference<>(i));
+    }
+    System.out.println("beforeGC : "  + map.size());
+    while (true){
+      System.gc();
+      if (map.size() <  SIZE) {
+        System.out.println("afterGC : "  + map.size());
+      }
+    }
+
+
   }
 
   @Test

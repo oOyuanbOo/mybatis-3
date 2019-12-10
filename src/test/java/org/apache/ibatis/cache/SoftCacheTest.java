@@ -37,6 +37,7 @@ class SoftCacheTest {
         break;
       }
     }
+    System.out.println(cache.getSize());
     assertTrue(cache.getSize() < N);
   }
 
