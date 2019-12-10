@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-<<<<<<< HEAD
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,21 +31,18 @@ import java.util.*;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.ibatis.domain.misc.CustomBeanWrapperFactory;
-=======
 import java.util.List;
 import java.util.Map;
 
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
 import org.apache.ibatis.domain.misc.RichType;
 import org.apache.ibatis.domain.misc.generics.GenericConcrete;
 import org.junit.jupiter.api.Test;
 
-<<<<<<< HEAD
+
 import javax.swing.*;
 import javax.xml.ws.Holder;
 
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
 class MetaClassTest {
 
   @Test
@@ -115,17 +112,16 @@ class MetaClassTest {
     ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
     MetaClass meta = MetaClass.forClass(RichType.class, reflectorFactory);
     assertEquals(String.class, meta.getGetterType("richField"));
-    assertEquals(String.class, meta.getGetterType("richProperty"));
+//    assertEquals(String.class, meta.getGetterType("richProperty"));
     assertEquals(List.class, meta.getGetterType("richList"));
     assertEquals(Map.class, meta.getGetterType("richMap"));
     assertEquals(List.class, meta.getGetterType("richList[0]"));
 
     assertEquals(RichType.class, meta.getGetterType("richType"));
-<<<<<<< HEAD
+
     assertEquals(String.class, meta.getGetterType("richType.parametersMap"));
-=======
     assertEquals(String.class, meta.getGetterType("richType.richField"));
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
     assertEquals(String.class, meta.getGetterType("richType.richProperty"));
     assertEquals(List.class, meta.getGetterType("richType.richList"));
     assertEquals(Map.class, meta.getGetterType("richType.richMap"));
@@ -165,7 +161,7 @@ class MetaClassTest {
     assertEquals("richField", meta.findProperty("RICHfield"));
   }
 
-<<<<<<< HEAD
+
   @Test
   void testParameterizedType() {
     Field[] fields = ParameterizedTypeBean.class.getDeclaredFields();
@@ -244,17 +240,15 @@ class MetaClassTest {
   public void test01() {
     RichType object = new RichType();
 
-    if (true) {
-      object.setRichType(new RichType());
-      object.getRichType().setRichMap(new HashMap());
-      object.getRichType().getRichMap().put("nihao", 111);
-    }
+//    if (true) {
+//      object.setRichType(new RichType());
+//      object.getRichType().setRichMap(new HashMap());
+//      object.getRichType().getRichMap().put("nihao", 111);
+//    }
 
     MetaObject meta = MetaObject.forObject(object, SystemMetaObject.DEFAULT_OBJECT_FACTORY, new CustomBeanWrapperFactory(), new DefaultReflectorFactory());
     Class<?> clazz = meta.getObjectWrapper().getGetterType("richType.richMap.nihao");
     System.out.println(clazz);
   }
 
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
 }
