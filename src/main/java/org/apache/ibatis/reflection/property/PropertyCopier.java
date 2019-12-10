@@ -21,11 +21,10 @@ import org.apache.ibatis.reflection.Reflector;
 
 /**
  * @author Clinton Begin
-<<<<<<< HEAD
+
  * 感觉我平时也用的到，挺实用的工具类
  * 牛批，感觉很好使的样子，连父类也囊括了
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
  */
 public final class PropertyCopier {
 
@@ -36,10 +35,9 @@ public final class PropertyCopier {
   public static void copyBeanProperties(Class<?> type, Object sourceBean, Object destinationBean) {
     Class<?> parent = type;
     while (parent != null) {
-<<<<<<< HEAD
+
       // 获取自己所有声明的属性
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
       final Field[] fields = parent.getDeclaredFields();
       for (Field field : fields) {
         try {

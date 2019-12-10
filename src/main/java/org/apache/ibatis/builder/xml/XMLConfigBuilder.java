@@ -69,13 +69,12 @@ public class XMLConfigBuilder extends BaseBuilder {
     this(new XPathParser(reader, true, props, new XMLMapperEntityResolver()), environment, props);
   }
 
-<<<<<<< HEAD
-=======
+
   /**
    * 这里学习下，方法的多态运用，一层层封装，提供不同的接口
    * @param inputStream
    */
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
   public XMLConfigBuilder(InputStream inputStream) {
     this(inputStream, null, null);
   }
@@ -88,15 +87,14 @@ public class XMLConfigBuilder extends BaseBuilder {
     this(new XPathParser(inputStream, true, props, new XMLMapperEntityResolver()), environment, props);
   }
 
-<<<<<<< HEAD
-=======
+
   /**
    * 在这里创建Configuration实例
    * @param parser  这个XpathParser是读取的mybaits-config的内容
    * @param environment
    * @param props
    */
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
   private XMLConfigBuilder(XPathParser parser, String environment, Properties props) {
     super(new Configuration());
     ErrorContext.instance().resource("SQL Mapper Configuration");
@@ -132,10 +130,9 @@ public class XMLConfigBuilder extends BaseBuilder {
       environmentsElement(root.evalNode("environments"));
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
       typeHandlerElement(root.evalNode("typeHandlers"));
-<<<<<<< HEAD
-=======
+
       // 但凡是后面用到的类的成员变量，一般都会从配置文件找到源头，这个mapper就是后面mapperInterface的源头，也就是方法所在接口
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
       mapperElement(root.evalNode("mappers"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
@@ -205,10 +202,9 @@ public class XMLConfigBuilder extends BaseBuilder {
       for (XNode child : parent.getChildren()) {
         String interceptor = child.getStringAttribute("interceptor");
         Properties properties = child.getChildrenAsProperties();
-<<<<<<< HEAD
-=======
+
         // resolveClass 用到了typeAliasRegistry获取全限定名，然后利用反射生成实例，确实牛批
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
         Interceptor interceptorInstance = (Interceptor) resolveClass(interceptor).newInstance();
         interceptorInstance.setProperties(properties);
         configuration.addInterceptor(interceptorInstance);
@@ -399,17 +395,12 @@ public class XMLConfigBuilder extends BaseBuilder {
           } else if (resource == null && url != null && mapperClass == null) {
             ErrorContext.instance().resource(url);
             InputStream inputStream = Resources.getUrlAsStream(url);
-<<<<<<< HEAD
-            XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, url, configuration.getSqlFragments());
-            mapperParser.parse();
-          } else if (resource == null && url == null && mapperClass != null) {
-=======
             // 这里就是mappedStatement类的源头，从XMLConfigBuilder开始进入XMLMapperBuilder，复杂类必须Builder
             XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, url, configuration.getSqlFragments());
             mapperParser.parse();
           } else if (resource == null && url == null && mapperClass != null) {
             // 从MapperProxy的invoke一直找到这里，发现了mapperInterface的源头，它应该就是mapper映射的接口，在mybatis-config里面
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
             Class<?> mapperInterface = Resources.classForName(mapperClass);
             configuration.addMapper(mapperInterface);
           } else {

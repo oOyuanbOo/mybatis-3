@@ -58,12 +58,6 @@ public class PreparedStatementHandler extends BaseStatementHandler {
     ps.addBatch();
   }
 
-<<<<<<< HEAD
-  @Override
-  public <E> List<E> query(Statement statement, ResultHandler resultHandler) throws SQLException {
-    PreparedStatement ps = (PreparedStatement) statement;
-    ps.execute();
-=======
   /**
    * 预编译控制器的查询方法
    * @param statement
@@ -78,7 +72,7 @@ public class PreparedStatementHandler extends BaseStatementHandler {
     // 就是执行预编译的意思吧
     ps.execute();
     // 这里应该就是开始处理返回结果了
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
     return resultSetHandler.handleResultSets(ps);
   }
 
@@ -92,10 +86,9 @@ public class PreparedStatementHandler extends BaseStatementHandler {
   @Override
   protected Statement instantiateStatement(Connection connection) throws SQLException {
     String sql = boundSql.getSql();
-<<<<<<< HEAD
-=======
+
     // 获取主键生成器
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
     if (mappedStatement.getKeyGenerator() instanceof Jdbc3KeyGenerator) {
       String[] keyColumnNames = mappedStatement.getKeyColumns();
       if (keyColumnNames == null) {

@@ -37,10 +37,9 @@ class SoftCacheTest {
         break;
       }
     }
-<<<<<<< HEAD
+
     System.out.println(cache.getSize());
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
     assertTrue(cache.getSize() < N);
   }
 
@@ -77,8 +76,6 @@ class SoftCacheTest {
     assertNull(cache.getObject(4));
   }
 
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+

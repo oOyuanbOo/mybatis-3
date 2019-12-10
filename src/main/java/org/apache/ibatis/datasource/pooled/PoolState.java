@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class PoolState {
   /**
-<<<<<<< HEAD
+
    * 所属PooledDataSource对象
    */
   protected PooledDataSource dataSource;
@@ -39,24 +39,6 @@ public class PoolState {
    * 全局统计  -  获取连接的时间
    */
   protected long requestCount = 0;
-  /**
-   *
-   */
-=======
-   *   互相引用
-   */
-  protected PooledDataSource dataSource;
-
-  /**
-   * 空闲连接列表
-   */
-  protected final List<PooledConnection> idleConnections = new ArrayList<>();
-  /**
-   * 活动连接列表
-   */
-  protected final List<PooledConnection> activeConnections = new ArrayList<>();
-  protected long requestCount = 0;
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   protected long accumulatedRequestTime = 0;
   protected long accumulatedCheckoutTime = 0;
   protected long claimedOverdueConnectionCount = 0;

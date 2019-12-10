@@ -15,20 +15,13 @@
  */
 package org.apache.ibatis.domain.misc;
 
-<<<<<<< HEAD
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class RichType{
-=======
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class RichType {
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
 
   private RichType richType;
 
@@ -38,13 +31,11 @@ public class RichType {
 
   private Map richMap = new HashMap();
 
-<<<<<<< HEAD
+
   private Map<String, Object> parametersMap = new HashMap();
 
   private String nihao;
 
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
   private List richList = new ArrayList() {
     {
       add("bar");
@@ -82,7 +73,7 @@ public class RichType {
   public void setRichMap(Map richMap) {
     this.richMap = richMap;
   }
-<<<<<<< HEAD
+
 
   public String getNihao() {
     return nihao;
@@ -91,6 +82,5 @@ public class RichType {
   public void setNihao(String nihao) {
     this.nihao = nihao;
   }
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
 }

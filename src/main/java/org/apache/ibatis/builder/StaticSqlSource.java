@@ -43,10 +43,9 @@ public class StaticSqlSource implements SqlSource {
 
   @Override
   public BoundSql getBoundSql(Object parameterObject) {
-<<<<<<< HEAD
-=======
+
     // 执行流程找BoundSql 各种实现都是调用的这里，看看如何初始化
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
     return new BoundSql(configuration, sql, parameterMappings, parameterObject);
   }
 

@@ -19,10 +19,9 @@ import java.util.Iterator;
 
 /**
  * @author Clinton Begin
-<<<<<<< HEAD
+
  * 既然你实现了遍历器，你肯定是想搞大事
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
  */
 public class PropertyTokenizer implements Iterator<PropertyTokenizer> {
   private String name;
@@ -30,15 +29,14 @@ public class PropertyTokenizer implements Iterator<PropertyTokenizer> {
   private String index;
   private final String children;
 
-<<<<<<< HEAD
+
   /**
    *  举个例子，在访问 "order[0].item[0].name" 时，
    *  我们希望拆分成 "order[0]"、"item[0]"、"name" 三段，
    *  那么就可以通过 PropertyTokenizer 来实现。
    * @param fullname
    */
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
   public PropertyTokenizer(String fullname) {
     int delim = fullname.indexOf('.');
     if (delim > -1) {
@@ -77,13 +75,12 @@ public class PropertyTokenizer implements Iterator<PropertyTokenizer> {
     return children != null;
   }
 
-<<<<<<< HEAD
+
   /**
    * 根据小数点，每次处理一节的数据
    * @return
    */
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
   @Override
   public PropertyTokenizer next() {
     return new PropertyTokenizer(children);

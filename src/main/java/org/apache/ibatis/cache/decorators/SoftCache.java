@@ -27,16 +27,10 @@ import org.apache.ibatis.cache.Cache;
  * Thanks to Dr. Heinz Kabutz for his guidance here.
  *
  * @author Clinton Begin
-<<<<<<< HEAD
  *
  * 软引用  就是鸡肋，除非装不下了，会去回收
  */
-public class SoftCache implements Cache {
-  private final Deque<Object> hardLinksToAvoidGarbageCollection;
-  private final ReferenceQueue<Object> queueOfGarbageCollectedEntries;
-  private final Cache delegate;
-=======
- * 这个应该挺难的，因为比较soft，用到了ReferenceQueue，软引用，虚引用，都是垃圾回收一块的知识
+ /* 这个应该挺难的，因为比较soft，用到了ReferenceQueue，软引用，虚引用，都是垃圾回收一块的知识
  * GC后一定会回收的是虚引用
  * 忘了
  * “强引用”，我若在，谁（垃圾收集器）都不敢动你，你若动他，我便毁你天堂～
@@ -60,15 +54,13 @@ public class SoftCache implements Cache {
   /**
    * 强引用数量
    */
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
   private int numberOfHardLinks;
 
   public SoftCache(Cache delegate) {
     this.delegate = delegate;
-<<<<<<< HEAD
-=======
+
     // 默认长度256
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     this.numberOfHardLinks = 256;
     this.hardLinksToAvoidGarbageCollection = new LinkedList<>();
     this.queueOfGarbageCollectedEntries = new ReferenceQueue<>();
@@ -81,10 +73,8 @@ public class SoftCache implements Cache {
 
   @Override
   public int getSize() {
-<<<<<<< HEAD
-=======
+
     // 获取长度这里就开始清理了
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
     removeGarbageCollectedItems();
     return delegate.getSize();
   }
@@ -96,12 +86,6 @@ public class SoftCache implements Cache {
 
   @Override
   public void putObject(Object key, Object value) {
-<<<<<<< HEAD
-    removeGarbageCollectedItems();
-    delegate.putObject(key, new SoftEntry(key, value, queueOfGarbageCollectedEntries));
-  }
-
-=======
     // 类似上面
     removeGarbageCollectedItems();
     // 只不过往value里面存的是一个带特异功能的节点
@@ -113,7 +97,7 @@ public class SoftCache implements Cache {
    * @param key The key
    * @return
    */
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
   @Override
   public Object getObject(Object key) {
     Object result = null;
@@ -121,14 +105,6 @@ public class SoftCache implements Cache {
     SoftReference<Object> softReference = (SoftReference<Object>) delegate.getObject(key);
     if (softReference != null) {
       result = softReference.get();
-<<<<<<< HEAD
-      if (result == null) {
-        delegate.removeObject(key);
-      } else {
-        // See #586 (and #335) modifications need more than a read lock
-        synchronized (hardLinksToAvoidGarbageCollection) {
-          hardLinksToAvoidGarbageCollection.addFirst(result);
-=======
       // 引用在，但是value是null
       if (result == null) {
         delegate.removeObject(key);
@@ -138,7 +114,6 @@ public class SoftCache implements Cache {
         synchronized (hardLinksToAvoidGarbageCollection) {
           hardLinksToAvoidGarbageCollection.addFirst(result);
           // 如果超过长度，删除最后一个
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
           if (hardLinksToAvoidGarbageCollection.size() > numberOfHardLinks) {
             hardLinksToAvoidGarbageCollection.removeLast();
           }
@@ -165,13 +140,9 @@ public class SoftCache implements Cache {
 
   private void removeGarbageCollectedItems() {
     SoftEntry sv;
-<<<<<<< HEAD
-    while ((sv = (SoftEntry) queueOfGarbageCollectedEntries.poll()) != null) {
-=======
     // poll 删除并返回，如果没有立刻返回null
     while ((sv = (SoftEntry) queueOfGarbageCollectedEntries.poll()) != null) {
       // 这个只负责听指挥，上头说删你就删
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       delegate.removeObject(sv.key);
     }
   }

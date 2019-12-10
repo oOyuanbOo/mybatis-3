@@ -46,12 +46,11 @@ public class PropertyParser {
   private static final String ENABLE_DEFAULT_VALUE = "false";
   private static final String DEFAULT_VALUE_SEPARATOR = ":";
 
-<<<<<<< HEAD
+
   /**
    * 私有构造方法，禁止外面构造的原因是因为这个类就是个工具类
    */
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
   private PropertyParser() {
     // Prevent Instantiation
   }

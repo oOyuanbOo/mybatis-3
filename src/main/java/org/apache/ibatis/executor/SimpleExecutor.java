@@ -58,13 +58,11 @@ public class SimpleExecutor extends BaseExecutor {
     Statement stmt = null;
     try {
       Configuration configuration = ms.getConfiguration();
-<<<<<<< HEAD
-      StatementHandler handler = configuration.newStatementHandler(wrapper, ms, parameter, rowBounds, resultHandler, boundSql);
-=======
+
       // 这里会创建数据库会话器
       StatementHandler handler = configuration.newStatementHandler(wrapper, ms, parameter, rowBounds, resultHandler, boundSql);
       // 只顾着看下面的query了，这一行会设置预编译中的参数，也很重要
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
       stmt = prepareStatement(handler, ms.getStatementLog());
       return handler.query(stmt, resultHandler);
     } finally {
@@ -89,13 +87,12 @@ public class SimpleExecutor extends BaseExecutor {
   private Statement prepareStatement(StatementHandler handler, Log statementLog) throws SQLException {
     Statement stmt;
     Connection connection = getConnection(statementLog);
-<<<<<<< HEAD
+
     stmt = handler.prepare(connection, transaction.getTimeout());
-=======
     // 为Statement准备一些基本参数  连接属性 超时时间  返回条数等
     stmt = handler.prepare(connection, transaction.getTimeout());
     // 这里面给typeHandler设置了很多的参数，准备到哪里用
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
     handler.parameterize(stmt);
     return stmt;
   }
