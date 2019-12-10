@@ -44,14 +44,13 @@ import org.apache.ibatis.session.SqlSession;
  * @author Lasse Voss
  * @author Kazuki Shimizu
  */
-<<<<<<< HEAD
-=======
+
 
 /**
  * 从MapperProxy类的invoke方法进入到这个类的execute方法
  * 这个类的作用应该是根据sqlComand属性来选择执行增删改查的方式
  */
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
 public class MapperMethod {
 
   private final SqlCommand command;
@@ -62,15 +61,14 @@ public class MapperMethod {
     this.method = new MethodSignature(config, mapperInterface, method);
   }
 
-<<<<<<< HEAD
-=======
+
   /**
    * 1.2.1 进入到sql的执行阶段
    * @param sqlSession
    * @param args
    * @return
    */
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
   public Object execute(SqlSession sqlSession, Object[] args) {
     Object result;
     switch (command.getType()) {
@@ -100,17 +98,14 @@ public class MapperMethod {
         } else if (method.returnsCursor()) {
           result = executeForCursor(sqlSession, args);
         } else {
-<<<<<<< HEAD
-          Object param = method.convertArgsToSqlCommandParam(args);
-=======
           // select 这里根据method的返回分了几种情形，来看一下这一种
           // 1.2.1 将参数转成map，有Param注解的包装成<param参数，value>，没有<index，value>
           Object param = method.convertArgsToSqlCommandParam(args);
           // 1.2.2 command 是本类的构造函数中初始化的，common.getName()就是Statement的id，也就mapper中的接口
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
           result = sqlSession.selectOne(command.getName(), param);
           if (method.returnsOptional()
-              && (result == null || !method.getReturnType().equals(result.getClass()))) {
+            && (result == null || !method.getReturnType().equals(result.getClass()))) {
             result = Optional.ofNullable(result);
           }
         }
@@ -123,7 +118,7 @@ public class MapperMethod {
     }
     if (result == null && method.getReturnType().isPrimitive() && !method.returnsVoid()) {
       throw new BindingException("Mapper method '" + command.getName()
-          + " attempted to return null from a method with a primitive return type (" + method.getReturnType() + ").");
+        + " attempted to return null from a method with a primitive return type (" + method.getReturnType() + ").");
     }
     return result;
   }
@@ -147,10 +142,10 @@ public class MapperMethod {
   private void executeWithResultHandler(SqlSession sqlSession, Object[] args) {
     MappedStatement ms = sqlSession.getConfiguration().getMappedStatement(command.getName());
     if (!StatementType.CALLABLE.equals(ms.getStatementType())
-        && void.class.equals(ms.getResultMaps().get(0).getType())) {
+      && void.class.equals(ms.getResultMaps().get(0).getType())) {
       throw new BindingException("method " + command.getName()
-          + " needs either a @ResultMap annotation, a @ResultType annotation,"
-          + " or a resultType attribute in XML so a ResultHandler can be used as a parameter.");
+        + " needs either a @ResultMap annotation, a @ResultType annotation,"
+        + " or a resultType attribute in XML so a ResultHandler can be used as a parameter.");
     }
     Object param = method.convertArgsToSqlCommandParam(args);
     if (method.hasRowBounds()) {
@@ -240,38 +235,33 @@ public class MapperMethod {
 
   }
 
-<<<<<<< HEAD
-=======
+
   /**
    * SqlCommand也是MapperMethod的内部类
    */
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
   public static class SqlCommand {
 
     private final String name;
     private final SqlCommandType type;
 
     public SqlCommand(Configuration configuration, Class<?> mapperInterface, Method method) {
-<<<<<<< HEAD
-      final String methodName = method.getName();
-      final Class<?> declaringClass = method.getDeclaringClass();
-=======
       // 方法名
       final String methodName = method.getName();
       // getDeclaringClass 方法所属的类，getClass获取到的是反射包的Method类
       final Class<?> declaringClass = method.getDeclaringClass();
       // MappedStatement 这是个重要对象，看看它怎么实现的
       // 一路找到XMLStatementBuilder 113行，终于找到这个MappedStatement怎么来的了
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
       MappedStatement ms = resolveMappedStatement(mapperInterface, methodName, declaringClass,
-          configuration);
+        configuration);
       if (ms == null) {
         if (method.getAnnotation(Flush.class) != null) {
           name = null;
           type = SqlCommandType.FLUSH;
         } else {
           throw new BindingException("Invalid bound statement (not found): "
-              + mapperInterface.getName() + "." + methodName);
+            + mapperInterface.getName() + "." + methodName);
         }
       } else {
         name = ms.getId();
@@ -290,49 +280,42 @@ public class MapperMethod {
       return type;
     }
 
-<<<<<<< HEAD
-    private MappedStatement resolveMappedStatement(Class<?> mapperInterface, String methodName,
+      /**
+       * 247行过来的，看看怎么构造这个MappedStatement
+       * @param mapperInterface
+       * @param methodName
+       * @param declaringClass
+       * @param configuration
+       * @return
+       */
+      private MappedStatement resolveMappedStatement(Class<?> mapperInterface, String methodName,
         Class<?> declaringClass, Configuration configuration) {
-      String statementId = mapperInterface.getName() + "." + methodName;
-=======
-    /**
-     * 247行过来的，看看怎么构造这个MappedStatement
-     * @param mapperInterface
-     * @param methodName
-     * @param declaringClass
-     * @param configuration
-     * @return
-     */
-    private MappedStatement resolveMappedStatement(Class<?> mapperInterface, String methodName,
-        Class<?> declaringClass, Configuration configuration) {
-      // statementId 是mapper接口名 + 方法
-      String statementId = mapperInterface.getName() + "." + methodName;
-      // 从configuration中获取这个类，那么应该是初始化的时候从config中实现的
-      // 一路回溯到XMLConfigBuilder类中，在parseConfiguration方法中找到初始类 20191116
-      // MapperStatement储存着一个增删改查节点的信息
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
-      if (configuration.hasStatement(statementId)) {
-        return configuration.getMappedStatement(statementId);
-      } else if (mapperInterface.equals(declaringClass)) {
-        return null;
-      }
-<<<<<<< HEAD
-=======
-      // 再往上找
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
-      for (Class<?> superInterface : mapperInterface.getInterfaces()) {
-        if (declaringClass.isAssignableFrom(superInterface)) {
-          MappedStatement ms = resolveMappedStatement(superInterface, methodName,
+        // statementId 是mapper接口名 + 方法
+        String statementId = mapperInterface.getName() + "." + methodName;
+        // 从configuration中获取这个类，那么应该是初始化的时候从config中实现的
+        // 一路回溯到XMLConfigBuilder类中，在parseConfiguration方法中找到初始类 20191116
+        // MapperStatement储存着一个增删改查节点的信息
+
+        if (configuration.hasStatement(statementId)) {
+          return configuration.getMappedStatement(statementId);
+        } else if (mapperInterface.equals(declaringClass)) {
+          return null;
+        }
+
+        // 再往上找
+
+        for (Class<?> superInterface : mapperInterface.getInterfaces()) {
+          if (declaringClass.isAssignableFrom(superInterface)) {
+            MappedStatement ms = resolveMappedStatement(superInterface, methodName,
               declaringClass, configuration);
-          if (ms != null) {
-            return ms;
+            if (ms != null) {
+              return ms;
+            }
           }
         }
+        return null;
       }
-      return null;
-    }
-<<<<<<< HEAD
-=======
+
 
  /*   public static void main(String[] args) throws NoSuchMethodException {
       Method size = new HashMap<>().getClass().getMethod("size");
@@ -341,120 +324,120 @@ public class MapperMethod {
 
       System.out.println(11);
     }*/
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
-  }
 
-  public static class MethodSignature {
+    }
 
-    private final boolean returnsMany;
-    private final boolean returnsMap;
-    private final boolean returnsVoid;
-    private final boolean returnsCursor;
-    private final boolean returnsOptional;
-    private final Class<?> returnType;
-    private final String mapKey;
-    private final Integer resultHandlerIndex;
-    private final Integer rowBoundsIndex;
-    private final ParamNameResolver paramNameResolver;
+    public static class MethodSignature {
 
-    public MethodSignature(Configuration configuration, Class<?> mapperInterface, Method method) {
-      Type resolvedReturnType = TypeParameterResolver.resolveReturnType(method, mapperInterface);
-      if (resolvedReturnType instanceof Class<?>) {
-        this.returnType = (Class<?>) resolvedReturnType;
-      } else if (resolvedReturnType instanceof ParameterizedType) {
-        this.returnType = (Class<?>) ((ParameterizedType) resolvedReturnType).getRawType();
-      } else {
-        this.returnType = method.getReturnType();
+      private final boolean returnsMany;
+      private final boolean returnsMap;
+      private final boolean returnsVoid;
+      private final boolean returnsCursor;
+      private final boolean returnsOptional;
+      private final Class<?> returnType;
+      private final String mapKey;
+      private final Integer resultHandlerIndex;
+      private final Integer rowBoundsIndex;
+      private final ParamNameResolver paramNameResolver;
+
+      public MethodSignature(Configuration configuration, Class<?> mapperInterface, Method method) {
+        Type resolvedReturnType = TypeParameterResolver.resolveReturnType(method, mapperInterface);
+        if (resolvedReturnType instanceof Class<?>) {
+          this.returnType = (Class<?>) resolvedReturnType;
+        } else if (resolvedReturnType instanceof ParameterizedType) {
+          this.returnType = (Class<?>) ((ParameterizedType) resolvedReturnType).getRawType();
+        } else {
+          this.returnType = method.getReturnType();
+        }
+        this.returnsVoid = void.class.equals(this.returnType);
+        this.returnsMany = configuration.getObjectFactory().isCollection(this.returnType) || this.returnType.isArray();
+        this.returnsCursor = Cursor.class.equals(this.returnType);
+        this.returnsOptional = Optional.class.equals(this.returnType);
+        this.mapKey = getMapKey(method);
+        this.returnsMap = this.mapKey != null;
+        this.rowBoundsIndex = getUniqueParamIndex(method, RowBounds.class);
+        this.resultHandlerIndex = getUniqueParamIndex(method, ResultHandler.class);
+        this.paramNameResolver = new ParamNameResolver(configuration, method);
       }
-      this.returnsVoid = void.class.equals(this.returnType);
-      this.returnsMany = configuration.getObjectFactory().isCollection(this.returnType) || this.returnType.isArray();
-      this.returnsCursor = Cursor.class.equals(this.returnType);
-      this.returnsOptional = Optional.class.equals(this.returnType);
-      this.mapKey = getMapKey(method);
-      this.returnsMap = this.mapKey != null;
-      this.rowBoundsIndex = getUniqueParamIndex(method, RowBounds.class);
-      this.resultHandlerIndex = getUniqueParamIndex(method, ResultHandler.class);
-      this.paramNameResolver = new ParamNameResolver(configuration, method);
-    }
 
-    public Object convertArgsToSqlCommandParam(Object[] args) {
-      return paramNameResolver.getNamedParams(args);
-    }
+      public Object convertArgsToSqlCommandParam(Object[] args) {
+        return paramNameResolver.getNamedParams(args);
+      }
 
-    public boolean hasRowBounds() {
-      return rowBoundsIndex != null;
-    }
+      public boolean hasRowBounds() {
+        return rowBoundsIndex != null;
+      }
 
-    public RowBounds extractRowBounds(Object[] args) {
-      return hasRowBounds() ? (RowBounds) args[rowBoundsIndex] : null;
-    }
+      public RowBounds extractRowBounds(Object[] args) {
+        return hasRowBounds() ? (RowBounds) args[rowBoundsIndex] : null;
+      }
 
-    public boolean hasResultHandler() {
-      return resultHandlerIndex != null;
-    }
+      public boolean hasResultHandler() {
+        return resultHandlerIndex != null;
+      }
 
-    public ResultHandler extractResultHandler(Object[] args) {
-      return hasResultHandler() ? (ResultHandler) args[resultHandlerIndex] : null;
-    }
+      public ResultHandler extractResultHandler(Object[] args) {
+        return hasResultHandler() ? (ResultHandler) args[resultHandlerIndex] : null;
+      }
 
-    public String getMapKey() {
-      return mapKey;
-    }
+      public String getMapKey() {
+        return mapKey;
+      }
 
-    public Class<?> getReturnType() {
-      return returnType;
-    }
+      public Class<?> getReturnType() {
+        return returnType;
+      }
 
-    public boolean returnsMany() {
-      return returnsMany;
-    }
+      public boolean returnsMany() {
+        return returnsMany;
+      }
 
-    public boolean returnsMap() {
-      return returnsMap;
-    }
+      public boolean returnsMap() {
+        return returnsMap;
+      }
 
-    public boolean returnsVoid() {
-      return returnsVoid;
-    }
+      public boolean returnsVoid() {
+        return returnsVoid;
+      }
 
-    public boolean returnsCursor() {
-      return returnsCursor;
-    }
+      public boolean returnsCursor() {
+        return returnsCursor;
+      }
 
-    /**
-     * return whether return type is {@code java.util.Optional}.
-     * @return return {@code true}, if return type is {@code java.util.Optional}
-     * @since 3.5.0
-     */
-    public boolean returnsOptional() {
-      return returnsOptional;
-    }
+      /**
+       * return whether return type is {@code java.util.Optional}.
+       * @return return {@code true}, if return type is {@code java.util.Optional}
+       * @since 3.5.0
+       */
+      public boolean returnsOptional() {
+        return returnsOptional;
+      }
 
-    private Integer getUniqueParamIndex(Method method, Class<?> paramType) {
-      Integer index = null;
-      final Class<?>[] argTypes = method.getParameterTypes();
-      for (int i = 0; i < argTypes.length; i++) {
-        if (paramType.isAssignableFrom(argTypes[i])) {
-          if (index == null) {
-            index = i;
-          } else {
-            throw new BindingException(method.getName() + " cannot have multiple " + paramType.getSimpleName() + " parameters");
+      private Integer getUniqueParamIndex(Method method, Class<?> paramType) {
+        Integer index = null;
+        final Class<?>[] argTypes = method.getParameterTypes();
+        for (int i = 0; i < argTypes.length; i++) {
+          if (paramType.isAssignableFrom(argTypes[i])) {
+            if (index == null) {
+              index = i;
+            } else {
+              throw new BindingException(method.getName() + " cannot have multiple " + paramType.getSimpleName() + " parameters");
+            }
           }
         }
+        return index;
       }
-      return index;
-    }
 
-    private String getMapKey(Method method) {
-      String mapKey = null;
-      if (Map.class.isAssignableFrom(method.getReturnType())) {
-        final MapKey mapKeyAnnotation = method.getAnnotation(MapKey.class);
-        if (mapKeyAnnotation != null) {
-          mapKey = mapKeyAnnotation.value();
+      private String getMapKey(Method method) {
+        String mapKey = null;
+        if (Map.class.isAssignableFrom(method.getReturnType())) {
+          final MapKey mapKeyAnnotation = method.getAnnotation(MapKey.class);
+          if (mapKeyAnnotation != null) {
+            mapKey = mapKeyAnnotation.value();
+          }
         }
+        return mapKey;
       }
-      return mapKey;
     }
-  }
 
-}
+  }
