@@ -28,10 +28,9 @@ import org.apache.ibatis.reflection.property.PropertyTokenizer;
 
 /**
  * @author Clinton Begin
-<<<<<<< HEAD
+
  * 汇合和MetaObject（在父类里面）   MetaClass 可以做大事了
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
  */
 public class BeanWrapper extends BaseWrapper {
 
@@ -47,10 +46,9 @@ public class BeanWrapper extends BaseWrapper {
   @Override
   public Object get(PropertyTokenizer prop) {
     if (prop.getIndex() != null) {
-<<<<<<< HEAD
+
       // 获得集合类型的属性
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
       Object collection = resolveCollection(prop, object);
       return getCollectionValue(prop, collection);
     } else {
@@ -98,7 +96,7 @@ public class BeanWrapper extends BaseWrapper {
     }
   }
 
-<<<<<<< HEAD
+
   /**
    * 获取属性的get方法返回类型，会什么要这么复杂呢
    * 因为你传过来的name 可能是一个prop[0].prop1.prop2
@@ -106,8 +104,7 @@ public class BeanWrapper extends BaseWrapper {
    * @param name
    * @return
    */
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
   @Override
   public Class<?> getGetterType(String name) {
     PropertyTokenizer prop = new PropertyTokenizer(name);
@@ -161,7 +158,7 @@ public class BeanWrapper extends BaseWrapper {
     }
   }
 
-<<<<<<< HEAD
+
   /**
    * 初始化一个属性值
    * @param name   属性名
@@ -176,13 +173,6 @@ public class BeanWrapper extends BaseWrapper {
     Class<?> type = getSetterType(prop.getName());
     try {
       // 根据参数类型创建一个实例
-=======
-  @Override
-  public MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop, ObjectFactory objectFactory) {
-    MetaObject metaValue;
-    Class<?> type = getSetterType(prop.getName());
-    try {
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
       Object newObject = objectFactory.create(type);
       metaValue = MetaObject.forObject(newObject, metaObject.getObjectFactory(), metaObject.getObjectWrapperFactory(), metaObject.getReflectorFactory());
       set(prop, newObject);
@@ -192,15 +182,14 @@ public class BeanWrapper extends BaseWrapper {
     return metaValue;
   }
 
-<<<<<<< HEAD
+
   /**
    * 获取属性值
    * @param prop
    * @param object
    * @return
    */
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
   private Object getBeanProperty(PropertyTokenizer prop, Object object) {
     try {
       Invoker method = metaClass.getGetInvoker(prop.getName());
@@ -216,15 +205,14 @@ public class BeanWrapper extends BaseWrapper {
     }
   }
 
-<<<<<<< HEAD
+
   /**
    * 设置指定属性的值，动用的一层层的包装器
    * @param prop
    * @param object
    * @param value
    */
-=======
->>>>>>> 5301c684afb0817920e573143b83a7605127b2e0
+
   private void setBeanProperty(PropertyTokenizer prop, Object object, Object value) {
     try {
       Invoker method = metaClass.getSetInvoker(prop.getName());
