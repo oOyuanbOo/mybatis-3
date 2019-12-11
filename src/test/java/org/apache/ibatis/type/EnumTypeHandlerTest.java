@@ -35,19 +35,24 @@ class EnumTypeHandlerTest extends BaseTypeHandlerTest {
   @Test
   public void shouldSetParameter() throws Exception {
     TYPE_HANDLER.setParameter(ps, 1, MyEnum.ONE, null);
+    // mockito 的verify方法
     verify(ps).setString(1, "ONE");
   }
 
   @Test
   public void shouldSetNullParameter() throws Exception {
     TYPE_HANDLER.setParameter(ps, 1, null, JdbcType.VARCHAR);
+    // 验证mock出来的ps，是否调用过setNull
     verify(ps).setNull(1, JdbcType.VARCHAR.TYPE_CODE);
+    verify(ps).setString(1, "");
   }
 
   @Override
   @Test
   public void shouldGetResultFromResultSetByName() throws Exception {
+    // 先stub
     when(rs.getString("column")).thenReturn("ONE");
+    //
     assertEquals(MyEnum.ONE, TYPE_HANDLER.getResult(rs, "column"));
     verify(rs, never()).wasNull();
   }
@@ -81,6 +86,7 @@ class EnumTypeHandlerTest extends BaseTypeHandlerTest {
   public void shouldGetResultFromCallableStatement() throws Exception {
     when(cs.getString(1)).thenReturn("ONE");
     assertEquals(MyEnum.ONE, TYPE_HANDLER.getResult(cs, 1));
+    // 验证从未被调用   价格never（）作为参数
     verify(cs, never()).wasNull();
   }
 

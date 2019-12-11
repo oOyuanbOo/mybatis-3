@@ -27,6 +27,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 abstract class BaseTypeHandlerTest {
 
+  /**
+   * @Mock注释标明这个方法已经Mock了，不用真实的初始化或引入依赖就能用了，不过逻辑得要你自己stub大壮
+   */
   @Mock
   protected ResultSet rs;
   @Mock

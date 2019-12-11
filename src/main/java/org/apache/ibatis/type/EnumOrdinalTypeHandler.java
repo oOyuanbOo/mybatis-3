@@ -41,15 +41,18 @@ public class EnumOrdinalTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E
 
   @Override
   public void setNonNullParameter(PreparedStatement ps, int i, E parameter, JdbcType jdbcType) throws SQLException {
+    // 将Enum转换成int类型
     ps.setInt(i, parameter.ordinal());
   }
 
   @Override
   public E getNullableResult(ResultSet rs, String columnName) throws SQLException {
+    // 获得int的值
     int ordinal = rs.getInt(columnName);
     if (ordinal == 0 && rs.wasNull()) {
       return null;
     }
+    // 将int转换成Enum类型
     return toOrdinalEnum(ordinal);
   }
 

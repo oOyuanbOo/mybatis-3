@@ -46,6 +46,7 @@ class IntegerTypeHandlerTest extends BaseTypeHandlerTest {
   @Override
   @Test
   public void shouldGetResultNullFromResultSetByName() throws Exception {
+    // 可以有，真实的ResultSet对象怕是很难构造出来，有了mock一切都简单起来了
     when(rs.getInt("column")).thenReturn(0);
     when(rs.wasNull()).thenReturn(true);
     assertNull(TYPE_HANDLER.getResult(rs, "column"));

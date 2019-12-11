@@ -72,7 +72,6 @@ public abstract class BaseTypeHandler<T> extends TypeReference<T> implements Typ
     // 如果参数为空
     if (parameter == null) {
       // 如果jdbcType也为空，就要抛异常了
-
       if (jdbcType == null) {
         throw new TypeException("JDBC requires that the JdbcType must be specified for all nullable parameters.");
       }
