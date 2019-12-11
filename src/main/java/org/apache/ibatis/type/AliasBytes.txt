@@ -1,0 +1,37 @@
+Classfile /Users/majinjin/Downloads/mybatis-3/src/main/java/org/apache/ibatis/type/Alias.class
+  Last modified 2019-12-9; size 455 bytes
+  MD5 checksum f9506d7289026e0cfb41863ebeb5e25f
+  Compiled from "Alias.java"
+public interface org.apache.ibatis.type.Alias extends java.lang.annotation.Annotation
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_INTERFACE, ACC_ABSTRACT, ACC_ANNOTATION
+Constant pool:
+   #1 = Class              #16            // org/apache/ibatis/type/Alias
+   #2 = Class              #17            // java/lang/Object
+   #3 = Class              #18            // java/lang/annotation/Annotation
+   #4 = Utf8               value
+   #5 = Utf8               ()Ljava/lang/String;
+   #6 = Utf8               SourceFile
+   #7 = Utf8               Alias.java
+   #8 = Utf8               RuntimeVisibleAnnotations
+   #9 = Utf8               Ljava/lang/annotation/Documented;
+  #10 = Utf8               Ljava/lang/annotation/Retention;
+  #11 = Utf8               Ljava/lang/annotation/RetentionPolicy;
+  #12 = Utf8               RUNTIME
+  #13 = Utf8               Ljava/lang/annotation/Target;
+  #14 = Utf8               Ljava/lang/annotation/ElementType;
+  #15 = Utf8               TYPE
+  #16 = Utf8               org/apache/ibatis/type/Alias
+  #17 = Utf8               java/lang/Object
+  #18 = Utf8               java/lang/annotation/Annotation
+{
+  public abstract java.lang.String value();
+    descriptor: ()Ljava/lang/String;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+}
+SourceFile: "Alias.java"
+RuntimeVisibleAnnotations:
+  0: #9()
+  1: #10(#4=e#11.#12)
+  2: #13(#4=[e#14.#15])
