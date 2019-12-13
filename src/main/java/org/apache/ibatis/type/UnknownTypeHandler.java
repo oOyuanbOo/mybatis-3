@@ -27,11 +27,15 @@ import org.apache.ibatis.io.Resources;
 
 /**
  * @author Clinton Begin
+ * 不知道是个什么类型该怎么映射？
  */
 public class UnknownTypeHandler extends BaseTypeHandler<Object> {
 
   private static final ObjectTypeHandler OBJECT_TYPE_HANDLER = new ObjectTypeHandler();
 
+  /**
+   * 初始化配置的一块内容，类型控制注册器出现了
+   */
   private TypeHandlerRegistry typeHandlerRegistry;
 
   public UnknownTypeHandler(TypeHandlerRegistry typeHandlerRegistry) {
@@ -41,6 +45,7 @@ public class UnknownTypeHandler extends BaseTypeHandler<Object> {
   @Override
   public void setNonNullParameter(PreparedStatement ps, int i, Object parameter, JdbcType jdbcType)
       throws SQLException {
+    // 先到注册器里去找找有没有这个javaType对应的jdbcType
     TypeHandler handler = resolveTypeHandler(parameter, jdbcType);
     handler.setParameter(ps, i, parameter, jdbcType);
   }
@@ -48,6 +53,7 @@ public class UnknownTypeHandler extends BaseTypeHandler<Object> {
   @Override
   public Object getNullableResult(ResultSet rs, String columnName)
       throws SQLException {
+    // 同样的返回的jdbcType也需要到注册器里找下映射
     TypeHandler<?> handler = resolveTypeHandler(rs, columnName);
     return handler.getResult(rs, columnName);
   }
@@ -70,9 +76,11 @@ public class UnknownTypeHandler extends BaseTypeHandler<Object> {
 
   private TypeHandler<?> resolveTypeHandler(Object parameter, JdbcType jdbcType) {
     TypeHandler<?> handler;
+    // null对应的是Object
     if (parameter == null) {
       handler = OBJECT_TYPE_HANDLER;
     } else {
+      // 不为空就到注册器里去找
       handler = typeHandlerRegistry.getTypeHandler(parameter.getClass(), jdbcType);
       // check if handler is null (issue #270)
       if (handler == null || handler instanceof UnknownTypeHandler) {
@@ -86,10 +94,12 @@ public class UnknownTypeHandler extends BaseTypeHandler<Object> {
     try {
       Map<String,Integer> columnIndexLookup;
       columnIndexLookup = new HashMap<>();
+      // metaData相当于是以Reflection为基础的增强类，更为便捷的使用反射
       ResultSetMetaData rsmd = rs.getMetaData();
       int count = rsmd.getColumnCount();
       for (int i = 1; i <= count; i++) {
         String name = rsmd.getColumnName(i);
+        // 把返回值和返回值位置作映射存储到查询map里
         columnIndexLookup.put(name,i);
       }
       Integer columnIndex = columnIndexLookup.get(column);
@@ -108,6 +118,7 @@ public class UnknownTypeHandler extends BaseTypeHandler<Object> {
 
   private TypeHandler<?> resolveTypeHandler(ResultSetMetaData rsmd, Integer columnIndex) {
     TypeHandler<?> handler = null;
+    // 知道位置了，就去获取jdbcType
     JdbcType jdbcType = safeGetJdbcTypeForColumn(rsmd, columnIndex);
     Class<?> javaType = safeGetClassForColumn(rsmd, columnIndex);
     if (javaType != null && jdbcType != null) {

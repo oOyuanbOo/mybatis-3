@@ -26,7 +26,8 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target(ElementType.TYPE)  // 注册到类，现在明白为什么是Type了吧，连Class都是Type的分支
 public @interface MappedTypes {
+  // return 匹配的java类型数组
   Class<?>[] value();
 }

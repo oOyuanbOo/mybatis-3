@@ -28,6 +28,13 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface MappedJdbcTypes {
+  /**
+   * @return 匹配的jdbcType类型的数组
+   */
   JdbcType[] value();
+
+  /**
+   * @return 是否包含jdbc类型的null
+   */
   boolean includeNullJdbcType() default false;
 }
