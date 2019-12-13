@@ -80,6 +80,7 @@ class TypeHandlerRegistryTest {
 
     };
 
+    // 给泛型包装了一层机甲，可以获取相关信息
     TypeReference<List<URI>> type = new TypeReference<List<URI>>(){};
 
     typeHandlerRegistry.register(type, fakeHandler);
@@ -135,6 +136,7 @@ class TypeHandlerRegistryTest {
     class MyDate extends Date {
       private static final long serialVersionUID = 1L;
     }
+    // 子类是父类   会往上找到父类对应的TypeHandler
     assertEquals(DateTypeHandler.class, typeHandlerRegistry.getTypeHandler(MyDate.class).getClass());
   }
 
@@ -146,6 +148,7 @@ class TypeHandlerRegistryTest {
     class MyDate2 extends MyDate1 {
       private static final long serialVersionUID = 1L;
     }
+    // 会一直往上找
     assertEquals(DateTypeHandler.class, typeHandlerRegistry.getTypeHandler(MyDate2.class).getClass());
   }
 
