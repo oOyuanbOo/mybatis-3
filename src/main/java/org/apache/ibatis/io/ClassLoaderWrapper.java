@@ -20,12 +20,20 @@ import java.net.URL;
 
 /**
  * A class to wrap access to multiple class loaders making them work as one
+ * 一个类，用于包装对多个类加载器的访问，使它们可以作为一个类工作
+ * 看看这个类到底想干嘛
  *
  * @author Clinton Begin
  */
 public class ClassLoaderWrapper {
 
+  /**
+   * 默认类加载器
+   */
   ClassLoader defaultClassLoader;
+  /**
+   * 系统类加载器
+   */
   ClassLoader systemClassLoader;
 
   ClassLoaderWrapper() {
@@ -41,6 +49,7 @@ public class ClassLoaderWrapper {
    *
    * @param resource - the resource to locate
    * @return the resource or null
+   * 获取资源链接
    */
   public URL getResourceAsURL(String resource) {
     return getResourceAsURL(resource, getClassLoaders(null));
@@ -134,9 +143,11 @@ public class ClassLoaderWrapper {
    * @param resource    - the resource to locate
    * @param classLoader - the class loaders to examine
    * @return the resource or null
+   * 获取就获取吧，你传类加载器干嘛，而且还是多个
    */
   URL getResourceAsURL(String resource, ClassLoader[] classLoader) {
 
+    // 统一资源定位符
     URL url;
 
     for (ClassLoader cl : classLoader) {
@@ -144,10 +155,12 @@ public class ClassLoaderWrapper {
       if (null != cl) {
 
         // look for the resource as passed in...
+        // 哦   原来资源是在加载器里保管的
         url = cl.getResource(resource);
 
         // ...but some class loaders want this leading "/", so we'll add it
         // and try again if we didn't find the resource
+        // 针对带斜杠的资源再处理一遍
         if (null == url) {
           url = cl.getResource("/" + resource);
         }
@@ -169,7 +182,7 @@ public class ClassLoaderWrapper {
 
   /**
    * Attempt to load a class from a group of classloaders
-   *
+   * 尝试从一堆加载器中加载一个类
    * @param name        - the class to load
    * @param classLoader - the group of classloaders to examine
    * @return the class
@@ -182,7 +195,7 @@ public class ClassLoaderWrapper {
       if (null != cl) {
 
         try {
-
+          // 从类加载器中找到这个类
           Class<?> c = Class.forName(name, true, cl);
 
           if (null != c) {
@@ -205,8 +218,11 @@ public class ClassLoaderWrapper {
     return new ClassLoader[]{
         classLoader,
         defaultClassLoader,
+        // 当前线程的类加载器
         Thread.currentThread().getContextClassLoader(),
+        // 当前类的类加载器
         getClass().getClassLoader(),
+        // java默认的类加载器
         systemClassLoader};
   }
 

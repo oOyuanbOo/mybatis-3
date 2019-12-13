@@ -50,14 +50,30 @@ import org.apache.ibatis.io.Resources;
 /**
  * @author Clinton Begin
  * @author Kazuki Shimizu
+ * 类型处理注册器
  */
 public final class TypeHandlerRegistry {
 
+  /**
+   * EnumMap 就是key是枚举类型的map
+   */
   private final Map<JdbcType, TypeHandler<?>>  jdbcTypeHandlerMap = new EnumMap<>(JdbcType.class);
+  /**
+   * 这个类干啥用的
+   */
   private final Map<Type, Map<JdbcType, TypeHandler<?>>> typeHandlerMap = new ConcurrentHashMap<>();
+  /**
+   * 具有找不到映射，会到注册表里查找功能的typeHandler
+   */
   private final TypeHandler<Object> unknownTypeHandler = new UnknownTypeHandler(this);
+  /**
+   * 所有类型的map
+   */
   private final Map<Class<?>, TypeHandler<?>> allTypeHandlersMap = new HashMap<>();
 
+  /**
+   * 空的map
+   */
   private static final Map<JdbcType, TypeHandler<?>> NULL_TYPE_HANDLER_MAP = Collections.emptyMap();
 
   private Class<? extends TypeHandler> defaultEnumTypeHandler = EnumTypeHandler.class;
@@ -346,12 +362,25 @@ public final class TypeHandlerRegistry {
     register((Type) javaType, typeHandler);
   }
 
+  /**
+   * 注册的核心方法
+   * @param javaType
+   * @param typeHandler
+   * @param <T>
+   */
   private <T> void register(Type javaType, TypeHandler<? extends T> typeHandler) {
+    // 先去获取TypeHandler上面的MappedJdbcTypes注解
     MappedJdbcTypes mappedJdbcTypes = typeHandler.getClass().getAnnotation(MappedJdbcTypes.class);
     if (mappedJdbcTypes != null) {
+      /**
+       * 就是说一个javaType，可以对应多个jdbcType？
+       */
       for (JdbcType handledJdbcType : mappedJdbcTypes.value()) {
         register(javaType, handledJdbcType, typeHandler);
       }
+      /**
+       * 如果还对应jdbcType的空类型
+       */
       if (mappedJdbcTypes.includeNullJdbcType()) {
         register(javaType, null, typeHandler);
       }
@@ -371,7 +400,9 @@ public final class TypeHandlerRegistry {
   }
 
   private void register(Type javaType, JdbcType jdbcType, TypeHandler<?> handler) {
+
     if (javaType != null) {
+      // 先从缓存的地方找找有没有现成的
       Map<JdbcType, TypeHandler<?>> map = typeHandlerMap.get(javaType);
       if (map == null || map == NULL_TYPE_HANDLER_MAP) {
         map = new HashMap<>();
@@ -379,6 +410,7 @@ public final class TypeHandlerRegistry {
       }
       map.put(jdbcType, handler);
     }
+    // 所有的handle都缓存到这个map里面
     allTypeHandlersMap.put(handler.getClass(), handler);
   }
 
@@ -388,6 +420,10 @@ public final class TypeHandlerRegistry {
 
   // Only handler type
 
+  /**
+   * 只有
+   * @param typeHandlerClass
+   */
   public void register(Class<?> typeHandlerClass) {
     boolean mappedTypeFound = false;
     MappedTypes mappedTypes = typeHandlerClass.getAnnotation(MappedTypes.class);
@@ -442,12 +478,18 @@ public final class TypeHandlerRegistry {
 
   // scan
 
+  /**
+   * 还可以从包里面注册
+   * @param packageName
+   */
   public void register(String packageName) {
+    // 用到了io里面的工具类
     ResolverUtil<Class<?>> resolverUtil = new ResolverUtil<>();
     resolverUtil.find(new ResolverUtil.IsA(TypeHandler.class), packageName);
     Set<Class<? extends Class<?>>> handlerSet = resolverUtil.getClasses();
     for (Class<?> type : handlerSet) {
       //Ignore inner classes and interfaces (including package-info.java) and abstract classes
+      // 匿名类
       if (!type.isAnonymousClass() && !type.isInterface() && !Modifier.isAbstract(type.getModifiers())) {
         register(type);
       }
@@ -458,8 +500,10 @@ public final class TypeHandlerRegistry {
 
   /**
    * @since 3.2.2
+   * 获取所有的TypeHandlers
    */
   public Collection<TypeHandler<?>> getTypeHandlers() {
+    // java.util.Collections.UnmodifiableCollection 将会在所有 add 和 remove 操作中抛出这个异常。
     return Collections.unmodifiableCollection(allTypeHandlersMap.values());
   }
 

@@ -27,11 +27,12 @@ import java.util.Properties;
 
 /**
  * A class to simplify access to resources through the classloader.
- *
+ * 简化通过类加载器访问资源
  * @author Clinton Begin
  */
 public class Resources {
 
+  /** 上来来一个包装器，里面满满的都是各种类加载器*/
   private static ClassLoaderWrapper classLoaderWrapper = new ClassLoaderWrapper();
 
   /**
@@ -80,6 +81,8 @@ public class Resources {
    * @param resource The resource to find
    * @return The resource
    * @throws java.io.IOException If the resource cannot be found or read
+   * 这个Resource相当于调用的classLoaderWrapper实现扩展功能，代理模式和包装模式的区别在于，代理模式不继承委托类，他只是利用委托类的某个功能
+   * 而装饰器模式实际上还是委托类，其他功能也要兼顾上
    */
   public static URL getResourceURL(ClassLoader loader, String resource) throws IOException {
     URL url = classLoaderWrapper.getResourceAsURL(resource, loader);
@@ -122,6 +125,7 @@ public class Resources {
    * @param resource The resource to find
    * @return The resource
    * @throws java.io.IOException If the resource cannot be found or read
+   * 学学这个Properties类咋用
    */
   public static Properties getResourceAsProperties(String resource) throws IOException {
     Properties props = new Properties();
@@ -153,6 +157,7 @@ public class Resources {
    * @param resource The resource to find
    * @return The resource
    * @throws java.io.IOException If the resource cannot be found or read
+   * 装饰器模式出现了
    */
   public static Reader getResourceAsReader(String resource) throws IOException {
     Reader reader;
@@ -188,6 +193,8 @@ public class Resources {
    * @param resource The resource to find
    * @return The resource
    * @throws java.io.IOException If the resource cannot be found or read
+   * 大同小异   inputStream Reader  File
+   * URL不是你想的那个路径字符串
    */
   public static File getResourceAsFile(String resource) throws IOException {
     return new File(getResourceURL(resource).getFile());
@@ -256,6 +263,7 @@ public class Resources {
    * @param className - the class to fetch
    * @return The loaded class
    * @throws ClassNotFoundException If the class cannot be found (duh!)
+   * 最常用的这个方法，实际上是调用的classLoaderWrapper的
    */
   public static Class<?> classForName(String className) throws ClassNotFoundException {
     return classLoaderWrapper.classForName(className);

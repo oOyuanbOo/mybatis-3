@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
@@ -63,7 +64,7 @@ public class ResolverUtil<T> {
   private static final Log log = LogFactory.getLog(ResolverUtil.class);
 
   /**
-   * A simple interface that specifies how to test classes to determine if they
+   * A simple interface that specifies（指定） how to test classes to determine（确定） if they
    * are to be included in the results produced by the ResolverUtil.
    */
   public interface Test {
@@ -87,6 +88,7 @@ public class ResolverUtil<T> {
     }
 
     /** Returns true if type is assignable to the parent type supplied in the constructor. */
+    /** 我是你爹的封装方法*/
     @Override
     public boolean matches(Class<?> type) {
       return type != null && parent.isAssignableFrom(type);
@@ -99,8 +101,9 @@ public class ResolverUtil<T> {
   }
 
   /**
-   * A Test that checks to see if each class is annotated with a specific annotation. If it
+   * A Test that checks to see if each class is annotated（注释） with a specific annotation. If it
    * is, then the test returns true, otherwise false.
+   * 这些个静态内部类怎么用
    */
   public static class AnnotatedWith implements Test {
     private Class<? extends Annotation> annotation;
@@ -214,9 +217,11 @@ public class ResolverUtil<T> {
    *        classes, e.g. {@code net.sourceforge.stripes}
    */
   public ResolverUtil<T> find(Test test, String packageName) {
+    // 获取包名路径
     String path = getPackagePath(packageName);
 
     try {
+      // VFS这个单例可以学习下
       List<String> children = VFS.getInstance().list(path);
       for (String child : children) {
         if (child.endsWith(".class")) {
