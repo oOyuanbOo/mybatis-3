@@ -37,6 +37,9 @@ import org.apache.ibatis.reflection.ArrayUtil;
  *
  * @author Clinton Begin
  * @author Eduardo Macarron
+ * 大概的意思就是通过代理为jdbc实现日志记录的功能
+ * 前面有个装饰器模式大全的模块，我找找，也有专用的日志记录装饰器. LogginCache，那个是装饰器模式
+ * 现在来看看代理怎么实现
  */
 public abstract class BaseJdbcLogger {
 
@@ -48,7 +51,10 @@ public abstract class BaseJdbcLogger {
   private final List<Object> columnNames = new ArrayList<>();
   private final List<Object> columnValues = new ArrayList<>();
 
+  /**接口，可以是任何的日志试下，棒棒*/
   protected final Log statementLog;
+
+  /** 查询堆栈是干嘛的*/
   protected final int queryStack;
 
   /*
@@ -62,8 +68,10 @@ public abstract class BaseJdbcLogger {
       this.queryStack = queryStack;
     }
   }
-
+  // 又见静态代码块
   static {
+    // 来看看这段lamda表达式
+    // 意思是找到所有预加载声明中的set方法的名称，放到SET_METHODS中
     SET_METHODS = Arrays.stream(PreparedStatement.class.getDeclaredMethods())
             .filter(method -> method.getName().startsWith("set"))
             .filter(method -> method.getParameterCount() > 1)
@@ -77,6 +85,7 @@ public abstract class BaseJdbcLogger {
   }
 
   protected void setColumn(Object key, Object value) {
+    // 分开存储的意义，哪里需要这么分开操作
     columnMap.put(key, value);
     columnNames.add(key);
     columnValues.add(value);
@@ -86,6 +95,11 @@ public abstract class BaseJdbcLogger {
     return columnMap.get(key);
   }
 
+  /**
+   * 只允许子类访问的这个protected方法，想干啥
+   * @return
+   * 返回所有列值的字符串
+   */
   protected String getParameterValueString() {
     List<Object> typeList = new ArrayList<>(columnValues.size());
     for (Object value : columnValues) {
@@ -102,6 +116,7 @@ public abstract class BaseJdbcLogger {
   protected String objectValueString(Object value) {
     if (value instanceof Array) {
       try {
+        // ArrayUtil 是reflection那里面的工具类
         return ArrayUtil.toString(((Array) value).getArray());
       } catch (SQLException e) {
         return value.toString();
@@ -120,6 +135,12 @@ public abstract class BaseJdbcLogger {
     columnValues.clear();
   }
 
+  /**
+   * 清除空字符
+   * @param original
+   * @return
+   * 这里面用到的java自带的工具类StringTokenizer，会遍历字节，清除里面的空格ßßß
+   */
   protected String removeBreakingWhitespace(String original) {
     StringTokenizer whitespaceStripper = new StringTokenizer(original);
     StringBuilder builder = new StringBuilder();
@@ -150,6 +171,11 @@ public abstract class BaseJdbcLogger {
     }
   }
 
+  /**
+   *
+   * @param isInput
+   * @return
+   */
   private String prefix(boolean isInput) {
     char[] buffer = new char[queryStack * 2 + 2];
     Arrays.fill(buffer, '=');
