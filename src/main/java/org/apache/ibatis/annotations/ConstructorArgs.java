@@ -28,5 +28,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface ConstructorArgs {
+  // 怎么样，答案就在这里
   Arg[] value() default {};
 }

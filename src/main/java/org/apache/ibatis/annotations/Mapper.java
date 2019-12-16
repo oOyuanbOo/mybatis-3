@@ -26,6 +26,7 @@ import java.lang.annotation.Target;
  * Marker interface for MyBatis mappers
  *
  * @author Frank David Martínez
+ * 这个类似于Xml里面mapperScan要遍历的注解
  */
 @Documented
 @Inherited

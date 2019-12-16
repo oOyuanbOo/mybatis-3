@@ -23,6 +23,7 @@ import java.lang.annotation.Target;
 
 /**
  * @author Clinton Begin
+ * 在resultMap或Type的基础上，指定一个字段作为key，result作为value
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

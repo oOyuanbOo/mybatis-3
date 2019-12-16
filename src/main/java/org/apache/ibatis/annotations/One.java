@@ -24,6 +24,7 @@ import org.apache.ibatis.mapping.FetchType;
 
 /**
  * @author Clinton Begin
+ * 相当于association  一对一的关系
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

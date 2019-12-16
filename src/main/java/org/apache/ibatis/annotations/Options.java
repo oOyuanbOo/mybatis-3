@@ -26,6 +26,7 @@ import org.apache.ibatis.mapping.StatementType;
 
 /**
  * @author Clinton Begin
+ * 在select注解后面可能需要返回唯一键，这个就是用来配置属性的，什么keyProperty  generateKey，参数都在下面
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
