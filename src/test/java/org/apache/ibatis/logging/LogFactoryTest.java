@@ -35,6 +35,7 @@ class LogFactoryTest {
   @Test
   void shouldUseCommonsLogging() {
     LogFactory.useCommonsLogging();
+    // 参数Object.class 姑且就是认为是log的名称吧
     Log log = LogFactory.getLog(Object.class);
     logSomething(log);
     assertEquals(log.getClass().getName(), JakartaCommonsLoggingImpl.class.getName());

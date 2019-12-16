@@ -90,6 +90,7 @@ class ResolverUtilTest {
   @Test
   void findAnnotated() {
     ResolverUtil<Object> resolverUtil = new ResolverUtil<>();
+    // 本类有个内部类上面有这个注解
     resolverUtil.findAnnotated(CacheNamespace.class, this.getClass().getPackage().getName());
     Set<Class<?>> classSets = resolverUtil.getClasses();
     //org.apache.ibatis.io.ResolverUtilTest.TestMapper

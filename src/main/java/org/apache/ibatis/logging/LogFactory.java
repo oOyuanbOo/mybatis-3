@@ -25,12 +25,23 @@ public final class LogFactory {
 
   /**
    * Marker to be used by logging implementations that support markers.
+   * mybatis 到底是如何实现的接入各厂商的log软件
+   * 1. 日志工厂LogFactory在初始化的时候，就会开始看看有哪些第三方日志实现接入到了项目
+   * 2.
    */
   public static final String MARKER = "MYBATIS";
 
   private static Constructor<? extends Log> logConstructor;
 
+  /** 把市面上这些日志软件都试一遍，如果有了实现，就不去给logConstructor赋值了 */
   static {
+    // tryImplementation 的参数是Runnable，这里是labmda的写法
+    // new Runnable(){
+    //   @Override
+    //   run(){
+    //      LogFactory::useSlf4jLogging;
+    //   }
+    // }
     tryImplementation(LogFactory::useSlf4jLogging);
     tryImplementation(LogFactory::useCommonsLogging);
     tryImplementation(LogFactory::useLog4J2Logging);
@@ -56,6 +67,9 @@ public final class LogFactory {
   }
 
   public static synchronized void useCustomLogging(Class<? extends Log> clazz) {
+    // set实现？  这个还是挺有意思的一个处理方式
+    // 这个是一个自定义的实现
+    // 实现里做的是初始化这个log对象，然后赋值给类变量
     setImplementation(clazz);
   }
 
@@ -99,11 +113,14 @@ public final class LogFactory {
 
   private static void setImplementation(Class<? extends Log> implClass) {
     try {
+      // 获取一个参数为String的构造函数
       Constructor<? extends Log> candidate = implClass.getConstructor(String.class);
+      // 创建一个实例，这个专门用来打印的
       Log log = candidate.newInstance(LogFactory.class.getName());
       if (log.isDebugEnabled()) {
         log.debug("Logging initialized using '" + implClass + "' adapter.");
       }
+      // 类变量logConstructor指向这个日志类，这个要到getLog的时候会用到
       logConstructor = candidate;
     } catch (Throwable t) {
       throw new LogException("Error setting Log implementation.  Cause: " + t, t);

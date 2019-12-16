@@ -42,7 +42,7 @@ import org.apache.ibatis.logging.LogFactory;
 public class DefaultVFS extends VFS {
   private static final Log log = LogFactory.getLog(DefaultVFS.class);
 
-  /** The magic header that indicates a JAR (ZIP) file. */
+  /** The magic header that indicates（表示） a JAR (ZIP) file. */
   private static final byte[] JAR_MAGIC = { 'P', 'K', 3, 4 };
 
   @Override
@@ -50,6 +50,14 @@ public class DefaultVFS extends VFS {
     return true;
   }
 
+  /**
+   * 主要就这么个方法
+   * 貌似使用来读jar包资源的
+   * @param url The URL that identifies the resource to list.
+   * @param path
+   * @return
+   * @throws IOException
+   */
   @Override
   public List<String> list(URL url, String path) throws IOException {
     InputStream is = null;
@@ -215,7 +223,7 @@ public class DefaultVFS extends VFS {
    *
    * @param url The URL of the JAR entry.
    * @return The URL of the JAR file, if one is found. Null if not.
-   * @throws MalformedURLException
+   * @throws MalformedURLException  格式错误URL异常
    */
   protected URL findJarForResource(URL url) throws MalformedURLException {
     if (log.isDebugEnabled()) {
@@ -223,6 +231,7 @@ public class DefaultVFS extends VFS {
     }
 
     // If the file part of the URL is itself a URL, then that URL probably points to the JAR
+    // 这段代码是靠抛异常break  牛批牛批
     try {
       for (;;) {
         url = new URL(url.getFile());

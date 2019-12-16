@@ -128,6 +128,7 @@ class ResourcesTest extends BaseDataTest {
 
   @Test
   void shouldNotFindThisClass() {
+    // 抛异常的方法可以用断言来抛，这样就不用try了，更优雅
     Assertions.assertThrows(ClassNotFoundException.class,
         () -> Resources.classForName("some.random.class.that.does.not.Exist"));
   }

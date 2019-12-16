@@ -71,10 +71,13 @@ public final class ResultSetLogger extends BaseJdbcLogger implements InvocationH
         if ((Boolean) o) {
           rows++;
           if (isTraceEnabled()) {
+            // 这里动用了etaData强力外骨骼，想干嘛
             ResultSetMetaData rsmd = rs.getMetaData();
+            // 为了获取这个列的数量
             final int columnCount = rsmd.getColumnCount();
             if (first) {
               first = false;
+              // 打印了什么内容，不清楚
               printColumnHeaders(rsmd, columnCount);
             }
             printColumnValues(columnCount);
@@ -127,6 +130,7 @@ public final class ResultSetLogger extends BaseJdbcLogger implements InvocationH
   public static ResultSet newInstance(ResultSet rs, Log statementLog, int queryStack) {
     InvocationHandler handler = new ResultSetLogger(rs, statementLog, queryStack);
     ClassLoader cl = ResultSet.class.getClassLoader();
+    // 返回的ResultSet的代理
     return (ResultSet) Proxy.newProxyInstance(cl, new Class[]{ResultSet.class}, handler);
   }
 

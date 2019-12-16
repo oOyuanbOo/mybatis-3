@@ -30,6 +30,7 @@ import org.apache.ibatis.logging.LogFactory;
 /**
  * Provides a very simple API for accessing resources within an application server.
  * 提供一个简单api用来访问应用服务器中的资源
+ * 虚拟文件系统( Virtual File System )抽象类，用来查找指定路径下的的文件们
  * @author Ben Gunter
  */
 public abstract class VFS {
@@ -42,7 +43,10 @@ public abstract class VFS {
   public static final List<Class<? extends VFS>> USER_IMPLEMENTATIONS = new ArrayList<>();
 
   /** Singleton instance holder. */
+  /** 单例控制器，来看一下大神怎么实现单例*/
+  /** 静态类，利用静态类只会初始化一次的特性，另外还有几种，比如双重检查锁，泛型等*/
   private static class VFSHolder {
+    /** 类变量*/
     static final VFS INSTANCE = createVFS();
 
     @SuppressWarnings("unchecked")

@@ -34,11 +34,17 @@ class VFSTest {
     Assertions.assertNotNull(vsf);
   }
 
+  /**
+   * 多线程环境测试单例
+   * 在实践其他单例的时候，也可以用这个工具来测
+   * @throws InterruptedException
+   */
   @Test
   void getInstanceShouldNotBeNullInMultiThreadEnv() throws InterruptedException {
     final int threadCount = 3;
 
     Thread[] threads = new Thread[threadCount];
+    // 初始化三个线程对象，工作就获取VFS单例
     InstanceGetterProcedure[] procedures = new InstanceGetterProcedure[threadCount];
 
     for (int i = 0; i < threads.length; i++) {
@@ -47,7 +53,7 @@ class VFSTest {
       procedures[i] = new InstanceGetterProcedure();
       threads[i] = new Thread(procedures[i], threadName);
     }
-
+    // 就绪
     for (Thread thread : threads) {
       thread.start();
     }

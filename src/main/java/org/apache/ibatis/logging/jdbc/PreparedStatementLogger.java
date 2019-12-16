@@ -33,7 +33,7 @@ import org.apache.ibatis.reflection.ExceptionUtil;
  *
  */
 public final class PreparedStatementLogger extends BaseJdbcLogger implements InvocationHandler {
-
+  /**  不出意外，这里很可能传过来一个ConnectionLogger的代理*/
   private final PreparedStatement statement;
 
   private PreparedStatementLogger(PreparedStatement stmt, Log statementLog, int queryStack) {
@@ -52,6 +52,7 @@ public final class PreparedStatementLogger extends BaseJdbcLogger implements Inv
           debug("Parameters: " + getParameterValueString(), true);
         }
         clearColumnInfo();
+        // 如果是查询方法，就接着返回ResultSet的代理类
         if ("executeQuery".equals(method.getName())) {
           ResultSet rs = (ResultSet) method.invoke(statement, params);
           return rs == null ? null : ResultSetLogger.newInstance(rs, statementLog, queryStack);
@@ -93,6 +94,7 @@ public final class PreparedStatementLogger extends BaseJdbcLogger implements Inv
   public static PreparedStatement newInstance(PreparedStatement stmt, Log statementLog, int queryStack) {
     InvocationHandler handler = new PreparedStatementLogger(stmt, statementLog, queryStack);
     ClassLoader cl = PreparedStatement.class.getClassLoader();
+    // 返回的是PreparedStatement CallableStatement这两个接口的代理
     return (PreparedStatement) Proxy.newProxyInstance(cl, new Class[]{PreparedStatement.class, CallableStatement.class}, handler);
   }
 

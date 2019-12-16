@@ -33,6 +33,7 @@ import org.apache.ibatis.reflection.ExceptionUtil;
  */
 public final class StatementLogger extends BaseJdbcLogger implements InvocationHandler {
 
+  // 非预编译的会话，不会像预编译那种，会给传入的参数转义
   private final Statement statement;
 
   private StatementLogger(Statement stmt, Log statementLog, int queryStack) {
