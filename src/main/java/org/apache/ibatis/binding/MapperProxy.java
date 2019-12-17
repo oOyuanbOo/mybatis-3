@@ -35,13 +35,23 @@ import org.apache.ibatis.session.SqlSession;
  * sqlSession  mapperInterface   methodCache都是干哈的，有啥作用，啥时候初始化的，了解下，下面的方法用到的挺多
  * 读源码和你平时看业务代码不同，mvc就三层，这个N层，注意抓重点
  * @param <T>
+ *     Mapper接口的代理类，这里是解密mapper接口为什么没有实现的关键
  */
 
 public class MapperProxy<T> implements InvocationHandler, Serializable {
 
   private static final long serialVersionUID = -6424540398559729838L;
+  /**
+   * 执行sql的会话
+   */
   private final SqlSession sqlSession;
+  /**
+   * 代理类需要实现的接口吧
+   */
   private final Class<T> mapperInterface;
+  /**
+   * 这个缓存是方法级的，就是说在动态代理生成字节码也就是编译后，装载到jvm，然后代理类被调用的时候，初始化的
+   */
   private final Map<Method, MapperMethod> methodCache;
 
   public MapperProxy(SqlSession sqlSession, Class<T> mapperInterface, Map<Method, MapperMethod> methodCache) {
@@ -63,7 +73,6 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     try {
       // 如果方法所在类是Object.class 则直接执行代理方法
       // 上面是我猜的，判断方法是否继承自Object，如toString、equals等方法
-
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, args);
       } else if (method.isDefault()) {
@@ -105,6 +114,15 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     return methodCache.computeIfAbsent(method, k -> new MapperMethod(mapperInterface, method, sqlSession.getConfiguration()));
   }
 
+  /**
+   * default
+   * @param proxy
+   * @param method
+   * @param args
+   * @return
+   * @throws Throwable
+   * java8 通过反射执行接口的default方法
+   */
   private Object invokeDefaultMethod(Object proxy, Method method, Object[] args)
       throws Throwable {
     final Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class

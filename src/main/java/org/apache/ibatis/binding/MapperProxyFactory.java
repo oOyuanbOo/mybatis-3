@@ -34,7 +34,6 @@ public class MapperProxyFactory<T> {
 
   private final Class<T> mapperInterface;
   // 这里的methodCachae用的是juc的并发HashMap
-
   private final Map<Method, MapperMethod> methodCache = new ConcurrentHashMap<>();
 
   public MapperProxyFactory(Class<T> mapperInterface) {
@@ -57,8 +56,8 @@ public class MapperProxyFactory<T> {
   public T newInstance(SqlSession sqlSession) {
     // 参数里有mapperInteface，你俩从哪来的
     final MapperProxy<T> mapperProxy = new MapperProxy<>(sqlSession, mapperInterface, methodCache);
-    // 这里调用的上面那个方法，给老弟MapperInterface直接整个代理，那么，你这个方法应该是初始化的时候搞的把
 
+    // 这里调用的上面那个方法，给老弟MapperInterface直接整个代理，那么，你这个方法应该是初始化的时候搞的把
     return newInstance(mapperProxy);
   }
 
