@@ -132,7 +132,6 @@ public class XMLConfigBuilder extends BaseBuilder {
       typeHandlerElement(root.evalNode("typeHandlers"));
 
       // 但凡是后面用到的类的成员变量，一般都会从配置文件找到源头，这个mapper就是后面mapperInterface的源头，也就是方法所在接口
-
       mapperElement(root.evalNode("mappers"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);

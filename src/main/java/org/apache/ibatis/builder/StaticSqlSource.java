@@ -45,7 +45,6 @@ public class StaticSqlSource implements SqlSource {
   public BoundSql getBoundSql(Object parameterObject) {
 
     // 执行流程找BoundSql 各种实现都是调用的这里，看看如何初始化
-
     return new BoundSql(configuration, sql, parameterMappings, parameterObject);
   }
 

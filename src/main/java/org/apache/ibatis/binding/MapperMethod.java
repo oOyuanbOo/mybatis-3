@@ -68,7 +68,6 @@ public class MapperMethod {
    * @param args
    * @return
    */
-
   public Object execute(SqlSession sqlSession, Object[] args) {
     Object result;
     switch (command.getType()) {
@@ -88,6 +87,7 @@ public class MapperMethod {
         break;
       }
       case SELECT:
+        // 没有返回值，并且还有ResultHandler
         if (method.returnsVoid() && method.hasResultHandler()) {
           executeWithResultHandler(sqlSession, args);
           result = null;
@@ -252,10 +252,10 @@ public class MapperMethod {
       final Class<?> declaringClass = method.getDeclaringClass();
       // MappedStatement 这是个重要对象，看看它怎么实现的
       // 一路找到XMLStatementBuilder 113行，终于找到这个MappedStatement怎么来的了
-
       MappedStatement ms = resolveMappedStatement(mapperInterface, methodName, declaringClass,
         configuration);
       if (ms == null) {
+        // 如果有@Flush注解，则标记为FLUSH类型
         if (method.getAnnotation(Flush.class) != null) {
           name = null;
           type = SqlCommandType.FLUSH;

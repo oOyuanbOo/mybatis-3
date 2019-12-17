@@ -30,6 +30,7 @@ import org.apache.ibatis.session.SqlSession;
  * @author Clinton Begin
  * @author Eduardo Macarron
  * @author Lasse Voss
+ * Mapper注册器
  */
 public class MapperRegistry {
 
@@ -47,9 +48,7 @@ public class MapperRegistry {
       throw new BindingException("Type " + type + " is not known to the MapperRegistry.");
     }
     try {
-
       // 从mapperProxy一路向上找过来，果不其然，getMapper这里生成代理类
-
       return mapperProxyFactory.newInstance(sqlSession);
     } catch (Exception e) {
       throw new BindingException("Error getting mapper instance. Cause: " + e, e);
@@ -61,7 +60,9 @@ public class MapperRegistry {
   }
 
   public <T> void addMapper(Class<T> type) {
+    // 必须是接口，不然你那个jdk的proxy咋整
     if (type.isInterface()) {
+      // 如果已经添加过，就抛出异常
       if (hasMapper(type)) {
         throw new BindingException("Type " + type + " is already known to the MapperRegistry.");
       }
@@ -69,13 +70,15 @@ public class MapperRegistry {
       try {
 
         // 从MapperProxy的invoke一路倒着追溯过来，MapperRegistry里new了这个工厂类，这个type也就是我们要找的MapperInterface了
-
+        // 添加到knownMappers中
         knownMappers.put(type, new MapperProxyFactory<>(type));
         // It's important that the type is added before the parser is run
         // otherwise the binding may automatically be attempted by the
         // mapper parser. If the type is already known, it won't try.
+        // 解析Mapper的注解配置
         MapperAnnotationBuilder parser = new MapperAnnotationBuilder(config, type);
         parser.parse();
+        // 标记加载完成
         loadCompleted = true;
       } finally {
         if (!loadCompleted) {
@@ -94,6 +97,7 @@ public class MapperRegistry {
 
   /**
    * @since 3.2.2
+   * 使用ResolverUtil 扫描包中的指定类，添加到knownMappers中
    */
   public void addMappers(String packageName, Class<?> superType) {
     ResolverUtil<Class<?>> resolverUtil = new ResolverUtil<>();
