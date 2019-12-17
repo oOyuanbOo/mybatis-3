@@ -38,7 +38,9 @@ public abstract class BaseDataTest {
   public static final String JPETSTORE_DATA = "org/apache/ibatis/databases/jpetstore/jpetstore-hsqldb-dataload.sql";
 
   public static UnpooledDataSource createUnpooledDataSource(String resource) throws IOException {
+    // 获取数据源配置信息
     Properties props = Resources.getResourceAsProperties(resource);
+    // 创建非池子数据源，并设置基本参数
     UnpooledDataSource ds = new UnpooledDataSource();
     ds.setDriver(props.getProperty("driver"));
     ds.setUrl(props.getProperty("url"));
