@@ -59,7 +59,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * 测试基本是虚拟了整个流程，俺是真的服气
- * 主线基本是在这里了，明天看看 
+ * 主线基本是在这里了，明天看看
  */
 class BindingTest {
   private static SqlSessionFactory sqlSessionFactory;
