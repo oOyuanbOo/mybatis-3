@@ -49,12 +49,16 @@ import org.apache.ibatis.type.JdbcType;
 /**
  * @author Clinton Begin
  * @author Kazuki Shimizu
+ * XML配置构建器，主要负责解析mybatis-config.xml
  */
 public class XMLConfigBuilder extends BaseBuilder {
-
+  /** 是否已解析 */
   private boolean parsed;
+  /** 基于 java XPath 解析器 */
   private final XPathParser parser;
+  /** 环境 */
   private String environment;
+  /** 这个我认识，外骨骼工厂 */
   private final ReflectorFactory localReflectorFactory = new DefaultReflectorFactory();
 
   public XMLConfigBuilder(Reader reader) {
@@ -96,8 +100,10 @@ public class XMLConfigBuilder extends BaseBuilder {
    */
 
   private XMLConfigBuilder(XPathParser parser, String environment, Properties props) {
+    // 这里创建了大boss Configuration类
     super(new Configuration());
     ErrorContext.instance().resource("SQL Mapper Configuration");
+    // 设置 Configuration 的 variables 属性
     this.configuration.setVariables(props);
     this.parsed = false;
     this.environment = environment;
@@ -116,19 +122,32 @@ public class XMLConfigBuilder extends BaseBuilder {
   private void parseConfiguration(XNode root) {
     try {
       //issue #117 read properties first
+      // 解析properties标签
       propertiesElement(root.evalNode("properties"));
+      // 解析settings标签
       Properties settings = settingsAsProperties(root.evalNode("settings"));
+      // 加载自定义VFS实现类
       loadCustomVfs(settings);
+      // 加载自定义的日志实现
       loadCustomLogImpl(settings);
+      // 解析类型别名标签
       typeAliasesElement(root.evalNode("typeAliases"));
+      // 解析插件
       pluginElement(root.evalNode("plugins"));
+      // 解析objectFactory标签
       objectFactoryElement(root.evalNode("objectFactory"));
+      // 解析objectWrapperFactory标签
       objectWrapperFactoryElement(root.evalNode("objectWrapperFactory"));
+      // 解析reflectorFactory标签
       reflectorFactoryElement(root.evalNode("reflectorFactory"));
+      // 复制settings到Configuration
       settingsElement(settings);
       // read it after objectFactory and objectWrapperFactory issue #631
+      // 解析environment标签
       environmentsElement(root.evalNode("environments"));
+      // 解析databaseIdProvider标签
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
+      // 解析typeHandlers标签
       typeHandlerElement(root.evalNode("typeHandlers"));
 
       // 但凡是后面用到的类的成员变量，一般都会从配置文件找到源头，这个mapper就是后面mapperInterface的源头，也就是方法所在接口
@@ -138,14 +157,16 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
   }
 
-  private Properties settingsAsProperties(XNode context) {
+  private Properties settingsAsProperties(XNode context/* 这是settings对象*/) {
     if (context == null) {
       return new Properties();
     }
     Properties props = context.getChildrenAsProperties();
     // Check that all settings are known to the configuration class
+    // 校验每个属性，在Configuration中由对应的set方法
     MetaClass metaConfig = MetaClass.forClass(Configuration.class, localReflectorFactory);
     for (Object key : props.keySet()) {
+      // 如果没有这个参数，就抛出解析异常，牛批，非常严谨了
       if (!metaConfig.hasSetter(String.valueOf(key))) {
         throw new BuilderException("The setting " + key + " is not known.  Make sure you spelled it correctly (case sensitive).");
       }
@@ -168,15 +189,30 @@ public class XMLConfigBuilder extends BaseBuilder {
   }
 
   private void loadCustomLogImpl(Properties props) {
+    // 获取到日志类
     Class<? extends Log> logImpl = resolveClass(props.getProperty("logImpl"));
+    // 设置实现
     configuration.setLogImpl(logImpl);
   }
 
+  /**
+   * 别名
+   * @param parent
+   * <typeAliases>
+   *     <typeAlias alias="BlogAuthor" type="org.apache.ibatis.domain.blog.Author"/>
+   *     <typeAlias type="org.apache.ibatis.domain.blog.Blog"/>
+   *     <typeAlias type="org.apache.ibatis.domain.blog.Post"/>
+   *     <package name="org.apache.ibatis.domain.jpetstore"/>
+   *   </typeAliases>
+   */
   private void typeAliasesElement(XNode parent) {
     if (parent != null) {
+      // 遍历子节点
       for (XNode child : parent.getChildren()) {
+        // 看上面
         if ("package".equals(child.getName())) {
           String typeAliasPackage = child.getStringAttribute("name");
+          // 找到包下面所有类，用simpleName映射这个类
           configuration.getTypeAliasRegistry().registerAliases(typeAliasPackage);
         } else {
           String alias = child.getStringAttribute("alias");
@@ -184,6 +220,7 @@ public class XMLConfigBuilder extends BaseBuilder {
           try {
             Class<?> clazz = Resources.classForName(type);
             if (alias == null) {
+              // 注册别名
               typeAliasRegistry.registerAlias(clazz);
             } else {
               typeAliasRegistry.registerAlias(alias, clazz);
@@ -239,23 +276,30 @@ public class XMLConfigBuilder extends BaseBuilder {
 
   private void propertiesElement(XNode context) throws Exception {
     if (context != null) {
+      // 借助XNode这个抽象出来的节点，读取子标签为Properties对象
       Properties defaults = context.getChildrenAsProperties();
+      // 读取properties(不是property)的resource和url属性
       String resource = context.getStringAttribute("resource");
       String url = context.getStringAttribute("url");
+      // 如果俩都不为空，就抛异常，看着没，包里面自带的异常，看到异常就知道是哪个包的问题了
       if (resource != null && url != null) {
         throw new BuilderException("The properties element cannot specify both a URL and a resource based property file reference.  Please specify one or the other.");
       }
+      // 读取本地链接的resource到defaults中
       if (resource != null) {
         defaults.putAll(Resources.getResourceAsProperties(resource));
+        // 读取远程 properties, url可以指向一个远程地址到defaults
       } else if (url != null) {
         defaults.putAll(Resources.getUrlAsProperties(url));
       }
+      // 一开始传进来的变量要是有值，会覆盖到defaults中
       Properties vars = configuration.getVariables();
       if (vars != null) {
         defaults.putAll(vars);
+        // 设置变量到XPathParser和Configuration中
+        parser.setVariables(defaults);
+        configuration.setVariables(defaults);
       }
-      parser.setVariables(defaults);
-      configuration.setVariables(defaults);
     }
   }
 

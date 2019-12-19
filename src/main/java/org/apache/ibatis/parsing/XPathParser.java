@@ -42,6 +42,7 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Clinton Begin
  * @author Kazuki Shimizu
+ * 这个类主要负责把XML解析成Document对象，借助Xpath工具
  */
 public class XPathParser {
 

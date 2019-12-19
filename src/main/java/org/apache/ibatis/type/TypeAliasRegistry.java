@@ -128,6 +128,7 @@ public class TypeAliasRegistry {
 
   public void registerAliases(String packageName, Class<?> superType) {
     ResolverUtil<Class<?>> resolverUtil = new ResolverUtil<>();
+    // 利用VFS找到包下面所有class，用simpleName映射这个类
     resolverUtil.find(new ResolverUtil.IsA(superType), packageName);
     Set<Class<? extends Class<?>>> typeSet = resolverUtil.getClasses();
     for (Class<?> type : typeSet) {
@@ -139,6 +140,10 @@ public class TypeAliasRegistry {
     }
   }
 
+  /**
+   * 如果传个类过来，别名就是他的simpleName，映射这个类
+   * @param type
+   */
   public void registerAlias(Class<?> type) {
     String alias = type.getSimpleName();
     Alias aliasAnnotation = type.getAnnotation(Alias.class);
