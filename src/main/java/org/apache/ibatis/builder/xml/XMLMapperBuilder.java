@@ -89,21 +89,23 @@ public class XMLMapperBuilder extends BaseBuilder {
     this.resource = resource;
   }
 
+  /**
+   * 解析xml的核心方法
+   */
   public void parse() {
     if (!configuration.isResourceLoaded(resource)) {
-
-      // 这里开始构建XMLMapper
-
+      // 配置mapper.xml中的元素，XPathParser依旧是将传入的路径解析成Document节点
       configurationElement(parser.evalNode("/mapper"));
+      // 大佬类添加加载的资源
       configuration.addLoadedResource(resource);
+      // 通过xml中的namespace属性找到mapper接口，并将其添加到大佬类中
       bindMapperForNamespace();
     }
-
+    // 上面configurationElement添加的resultMap的内容在这里面解析
     parsePendingResultMaps();
+    // 和上面类似
     parsePendingCacheRefs();
-
-    // MapperProxy
-
+    // 同上
     parsePendingStatements();
   }
 
@@ -121,15 +123,16 @@ public class XMLMapperBuilder extends BaseBuilder {
     try {
       String namespace = context.getStringAttribute("namespace");
       if (namespace == null || namespace.equals("")) {
+        // 异常确定包，如果出现问题，就直接到源码里来搜，不过还是断点直接些
         throw new BuilderException("Mapper's namespace cannot be empty");
       }
+      // 助理类有点像metaClass中的包含的Reflector，左膀右臂
       builderAssistant.setCurrentNamespace(namespace);
 
+      // cache-ref 是引用别的mapper类的cache配置
       cacheRefElement(context.evalNode("cache-ref"));
-      // cache-ref 是引用别的mapper类的cache配合
-      cacheRefElement(context.evalNode("cache-ref"));
-      // cache 就是缓存了，这里是二级缓存，一级是sqlSession级别默认打开
 
+      // cache 就是缓存了，这里是二级缓存，一级是sqlSession级别默认打开
       cacheElement(context.evalNode("cache"));
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
       resultMapElements(context.evalNodes("/mapper/resultMap"));
@@ -159,12 +162,18 @@ public class XMLMapperBuilder extends BaseBuilder {
   }
 
   private void parsePendingResultMaps() {
+    // 获取mapper xml中ResultMap
+    // 解析又单独封装了一层，每一层都是下一层的客户端，尽量在客户端用简单的语言表述问题
     Collection<ResultMapResolver> incompleteResultMaps = configuration.getIncompleteResultMaps();
+    // TODO: 这里为什么要上锁呢，下面的迭代器删除的确会出现并发问题?
+    // 那么这个方法什么时候会出现并发
+    // 不纠结了  就当是预防万一了
     synchronized (incompleteResultMaps) {
       Iterator<ResultMapResolver> iter = incompleteResultMaps.iterator();
       while (iter.hasNext()) {
         try {
           iter.next().resolve();
+          // 迭代器删除，单线程是没问题的
           iter.remove();
         } catch (IncompleteElementException e) {
           // ResultMap is still missing a resource...
@@ -182,6 +191,7 @@ public class XMLMapperBuilder extends BaseBuilder {
           iter.next().resolveCacheRef();
           iter.remove();
         } catch (IncompleteElementException e) {
+          // 这里啥也没处理
           // Cache ref is still missing a resource...
         }
       }
@@ -205,11 +215,14 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   private void cacheRefElement(XNode context) {
     if (context != null) {
+      // cache-ref 直接把别的mapper.xml中的cache配置拿来用
       configuration.addCacheRef(builderAssistant.getCurrentNamespace(), context.getStringAttribute("namespace"));
+      // 解析也是要借助builderAssistant 这个小助手
       CacheRefResolver cacheRefResolver = new CacheRefResolver(builderAssistant, context.getStringAttribute("namespace"));
       try {
         cacheRefResolver.resolveCacheRef();
       } catch (IncompleteElementException e) {
+        // 如果解析出现异常，就把它放入到大佬那个回收站里，后面有方法还会在解析一遍
         configuration.addIncompleteCacheRef(cacheRefResolver);
       }
     }
@@ -436,15 +449,20 @@ public class XMLMapperBuilder extends BaseBuilder {
   }
 
   private void bindMapperForNamespace() {
+    // namespace就是对应的mapper接口
     String namespace = builderAssistant.getCurrentNamespace();
     if (namespace != null) {
       Class<?> boundType = null;
       try {
+        // 获取类对象
         boundType = Resources.classForName(namespace);
       } catch (ClassNotFoundException e) {
         //ignore, bound type is not required
       }
       if (boundType != null) {
+        // 如果大佬类没把这个mapper接口纳进来，说明XMLConfigBuilder类在parse时候，并没有在mappers节点下获取到这个接口
+        // 也就是说用户没有用mapper元素的class 或者package属性声明这个mapper接口
+        // 这里也是你之前没看明白为毛只parse mapper.xml 而没有addMapper的原因
         if (!configuration.hasMapper(boundType)) {
           // Spring may not know the real resource name so we set a flag
           // to prevent loading again this resource from the mapper interface
