@@ -69,7 +69,7 @@ public final class LogFactory {
   public static synchronized void useCustomLogging(Class<? extends Log> clazz) {
     // set实现？  这个还是挺有意思的一个处理方式
     // 这个是一个自定义的实现
-    // 实现里做的是初始化这个log对象，然后赋值给类变量
+    // 实现里做的是初始化这个log对象，然后赋值给类变量，类变量相当于是LogFactory里面各种功能真正的实现
     setImplementation(clazz);
   }
 

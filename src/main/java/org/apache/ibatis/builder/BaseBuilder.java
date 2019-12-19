@@ -30,10 +30,14 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
  * @author Clinton Begin
+ * 基础构造器抽象类，为子类提供通用的工具类，抽象类往往是带有工具类的性质
  */
 public abstract class BaseBuilder {
+  /** boss 类*/
   protected final Configuration configuration;
+  /** 类型别名注册器 */
   protected final TypeAliasRegistry typeAliasRegistry;
+  /** 类型映射注册器 */
   protected final TypeHandlerRegistry typeHandlerRegistry;
 
   public BaseBuilder(Configuration configuration) {
@@ -46,6 +50,12 @@ public abstract class BaseBuilder {
     return configuration;
   }
 
+  /**
+   * 生成正则对象
+   * @param regex
+   * @param defaultValue
+   * @return
+   */
   protected Pattern parseExpression(String regex, String defaultValue) {
     return Pattern.compile(regex == null ? defaultValue : regex);
   }
@@ -58,11 +68,22 @@ public abstract class BaseBuilder {
     return value == null ? defaultValue : Integer.valueOf(value);
   }
 
+  /**
+   * 吧逗号隔开的String转成一个set，可以直接用HashSet的构造方法，参数是Collection
+   * @param value
+   * @param defaultValue
+   * @return
+   */
   protected Set<String> stringSetValueOf(String value, String defaultValue) {
     value = value == null ? defaultValue : value;
     return new HashSet<>(Arrays.asList(value.split(",")));
   }
 
+  /**
+   * 类型别名
+   * @param alias
+   * @return
+   */
   protected JdbcType resolveJdbcType(String alias) {
     if (alias == null) {
       return null;
@@ -85,6 +106,11 @@ public abstract class BaseBuilder {
     }
   }
 
+  /**
+   * 参数类型有in out  inout  啥意思   貌似是存储过程的参数
+   * @param alias
+   * @return
+   */
   protected ParameterMode resolveParameterMode(String alias) {
     if (alias == null) {
       return null;
@@ -96,6 +122,11 @@ public abstract class BaseBuilder {
     }
   }
 
+  /**
+   * 通过别名获取类，然后创建实例
+   * @param alias
+   * @return
+   */
   protected Object createInstance(String alias) {
     Class<?> clazz = resolveClass(alias);
     if (clazz == null) {
@@ -119,6 +150,12 @@ public abstract class BaseBuilder {
     }
   }
 
+  /**
+   * 类型映射的别名
+   * @param javaType
+   * @param typeHandlerAlias
+   * @return
+   */
   protected TypeHandler<?> resolveTypeHandler(Class<?> javaType, String typeHandlerAlias) {
     if (typeHandlerAlias == null) {
       return null;
@@ -137,6 +174,7 @@ public abstract class BaseBuilder {
       return null;
     }
     // javaType ignored for injected handlers see issue #746 for full detail
+    // 每个工具的底层基本都是由通用的工具类来实现
     TypeHandler<?> handler = typeHandlerRegistry.getMappingTypeHandler(typeHandlerType);
     if (handler == null) {
       // not in registry, create a new one
@@ -145,6 +183,12 @@ public abstract class BaseBuilder {
     return handler;
   }
 
+  /**
+   * 别名获取全限定名
+   * @param alias
+   * @param <T>
+   * @return
+   */
   protected <T> Class<? extends T> resolveAlias(String alias) {
     return typeAliasRegistry.resolveAlias(alias);
   }

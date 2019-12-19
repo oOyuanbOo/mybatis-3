@@ -238,6 +238,7 @@ public class Configuration {
   public void setVfsImpl(Class<? extends VFS> vfsImpl) {
     if (vfsImpl != null) {
       this.vfsImpl = vfsImpl;
+      // 添加到VFS中的自定义VFS类的集合
       VFS.addImplClass(this.vfsImpl);
     }
   }

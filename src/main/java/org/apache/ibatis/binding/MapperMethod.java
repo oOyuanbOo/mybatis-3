@@ -295,7 +295,6 @@ public class MapperMethod {
         // 从configuration中获取这个类，那么应该是初始化的时候从config中实现的
         // 一路回溯到XMLConfigBuilder类中，在parseConfiguration方法中找到初始类 20191116
         // MapperStatement储存着一个增删改查节点的信息
-
         if (configuration.hasStatement(statementId)) {
           return configuration.getMappedStatement(statementId);
         } else if (mapperInterface.equals(declaringClass)) {
@@ -303,7 +302,6 @@ public class MapperMethod {
         }
 
         // 再往上找
-
         for (Class<?> superInterface : mapperInterface.getInterfaces()) {
           if (declaringClass.isAssignableFrom(superInterface)) {
             MappedStatement ms = resolveMappedStatement(superInterface, methodName,
