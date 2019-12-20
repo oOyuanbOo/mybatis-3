@@ -23,6 +23,9 @@ import java.lang.annotation.Target;
 
 /**
  * @author Clinton Begin
+ * type 这个类，里面return一个new SQL{
+ *   { 定义的method}
+ * }.toString();
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

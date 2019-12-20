@@ -273,7 +273,6 @@ public class MapperBuilderAssistant extends BaseBuilder {
 
 
     // 这里创建了这个威名遐迩的对象 MappedStatement，里面内容是真的多，就是一个增删改查节点的内容
-
     MappedStatement.Builder statementBuilder = new MappedStatement.Builder(configuration, id, sqlSource, sqlCommandType)
         .resource(resource)
         .fetchSize(fetchSize)

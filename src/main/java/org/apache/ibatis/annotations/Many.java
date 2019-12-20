@@ -24,6 +24,7 @@ import org.apache.ibatis.mapping.FetchType;
 
 /**
  * @author Clinton Begin
+ * 相当于xml写法中的collections
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

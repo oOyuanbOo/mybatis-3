@@ -29,6 +29,7 @@ import org.apache.ibatis.type.UnknownTypeHandler;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
+// ({})这个我总结应该是出现在注解的参数中  arg就是构造注解的参数ConstructorArgs
 @Target({})
 public @interface Arg {
   boolean id() default false;

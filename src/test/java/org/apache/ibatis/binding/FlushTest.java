@@ -34,6 +34,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * 没猜错应该和缓存有关系
+ */
 public class FlushTest {
     private static SqlSessionFactory sqlSessionFactory;
 
