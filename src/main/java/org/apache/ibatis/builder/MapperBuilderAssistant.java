@@ -51,6 +51,7 @@ import org.apache.ibatis.type.TypeHandler;
 
 /**
  * @author Clinton Begin
+ * 这个类也是继承自BaseBuilder，然后又依赖于XMLMapperBuilder，有点意思
  */
 public class MapperBuilderAssistant extends BaseBuilder {
 

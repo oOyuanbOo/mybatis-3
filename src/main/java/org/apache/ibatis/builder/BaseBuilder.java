@@ -31,6 +31,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 /**
  * @author Clinton Begin
  * 基础构造器抽象类，为子类提供通用的工具类，抽象类往往是带有工具类的性质
+ * 这三个成员变量  毫无疑问是比较受欢迎的，其中别名 和 映射这俩注册器应该是用的最多的，不然直接拿Configuration调不就得了
  */
 public abstract class BaseBuilder {
   /** boss 类*/

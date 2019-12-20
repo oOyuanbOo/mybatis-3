@@ -143,9 +143,14 @@ public class XMLConfigBuilder extends BaseBuilder {
       // 复制settings到Configuration
       settingsElement(settings);
       // read it after objectFactory and objectWrapperFactory issue #631
-      // 解析environment标签
+      // 解析environment标签  DB环境
       environmentsElement(root.evalNode("environments"));
-      // 解析databaseIdProvider标签
+      // 解析databaseIdProvider标签   数据库厂商标识
+      // <databaseIdProvider type="DB_VENDOR">
+      //  <property name="SQL Server" value="sqlserver"/>
+      //  <property name="DB2" value="db2"/>
+      //  <property name="Oracle" value="oracle" />
+      //</databaseIdProvider>
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
       // 解析typeHandlers标签
       typeHandlerElement(root.evalNode("typeHandlers"));
@@ -236,13 +241,14 @@ public class XMLConfigBuilder extends BaseBuilder {
   private void pluginElement(XNode parent) throws Exception {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
+        // 插件类
         String interceptor = child.getStringAttribute("interceptor");
+        // 插件类初始化的参数
         Properties properties = child.getChildrenAsProperties();
-
         // resolveClass 用到了typeAliasRegistry获取全限定名，然后利用反射生成实例，确实牛批
-
         Interceptor interceptorInstance = (Interceptor) resolveClass(interceptor).newInstance();
         interceptorInstance.setProperties(properties);
+        // 添加到拦截器链中
         configuration.addInterceptor(interceptorInstance);
       }
     }
@@ -250,7 +256,9 @@ public class XMLConfigBuilder extends BaseBuilder {
 
   private void objectFactoryElement(XNode context) throws Exception {
     if (context != null) {
+      // 获得ObjectFactory的实现类
       String type = context.getStringAttribute("type");
+      // 获得Properties 属性
       Properties properties = context.getChildrenAsProperties();
       ObjectFactory factory = (ObjectFactory) resolveClass(type).newInstance();
       factory.setProperties(properties);
@@ -303,6 +311,10 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
   }
 
+  /**
+   * setting 这里要做的就是熟悉各种属性
+   * @param props
+   */
   private void settingsElement(Properties props) {
     configuration.setAutoMappingBehavior(AutoMappingBehavior.valueOf(props.getProperty("autoMappingBehavior", "PARTIAL")));
     configuration.setAutoMappingUnknownColumnBehavior(AutoMappingUnknownColumnBehavior.valueOf(props.getProperty("autoMappingUnknownColumnBehavior", "NONE")));
@@ -334,15 +346,20 @@ public class XMLConfigBuilder extends BaseBuilder {
 
   private void environmentsElement(XNode context) throws Exception {
     if (context != null) {
+      // 如果属性为空，就从default获取
       if (environment == null) {
         environment = context.getStringAttribute("default");
       }
+      // 遍历节点
       for (XNode child : context.getChildren()) {
         String id = child.getStringAttribute("id");
         if (isSpecifiedEnvironment(id)) {
+          // 获取事务管理器
           TransactionFactory txFactory = transactionManagerElement(child.evalNode("transactionManager"));
+          // 获取dataSorce
           DataSourceFactory dsFactory = dataSourceElement(child.evalNode("dataSource"));
           DataSource dataSource = dsFactory.getDataSource();
+          // Builder 是个内部类吧，这个构造器让人耳目一新，对于复杂对象，大可以借鉴这种实现方式，不然构造器要疯了
           Environment.Builder environmentBuilder = new Environment.Builder(id)
               .transactionFactory(txFactory)
               .dataSource(dataSource);
@@ -360,6 +377,7 @@ public class XMLConfigBuilder extends BaseBuilder {
       if ("VENDOR".equals(type)) {
         type = "DB_VENDOR";
       }
+      //  <property name="SQL Server" value="sqlserver"/>
       Properties properties = context.getChildrenAsProperties();
       databaseIdProvider = (DatabaseIdProvider) resolveClass(type).newInstance();
       databaseIdProvider.setProperties(properties);
@@ -367,6 +385,7 @@ public class XMLConfigBuilder extends BaseBuilder {
     Environment environment = configuration.getEnvironment();
     if (environment != null && databaseIdProvider != null) {
       String databaseId = databaseIdProvider.getDatabaseId(environment.getDataSource());
+      // 设置到configuration中
       configuration.setDatabaseId(databaseId);
     }
   }
@@ -394,9 +413,16 @@ public class XMLConfigBuilder extends BaseBuilder {
   }
 
   private void typeHandlerElement(XNode parent) {
+    // <typeHandlers>
+    //    <typeHandler javaType="String" handler="org.apache.ibatis.builder.CustomStringTypeHandler"/>
+    //    <typeHandler javaType="String" jdbcType="VARCHAR" handler="org.apache.ibatis.builder.CustomStringTypeHandler"/>
+    //    <typeHandler handler="org.apache.ibatis.builder.CustomLongTypeHandler"/>
+    //    <package name="org.apache.ibatis.builder.typehandler"/>
+    //  </typeHandlers>
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
         if ("package".equals(child.getName())) {
+          // 从包里获取
           String typeHandlerPackage = child.getStringAttribute("name");
           typeHandlerRegistry.register(typeHandlerPackage);
         } else {
@@ -406,6 +432,8 @@ public class XMLConfigBuilder extends BaseBuilder {
           Class<?> javaTypeClass = resolveClass(javaTypeName);
           JdbcType jdbcType = resolveJdbcType(jdbcTypeName);
           Class<?> typeHandlerClass = resolveClass(handlerTypeName);
+          // 我本来想是不是获取这些元素会new一个对象出来，原来人家早就有构造方法用了
+          // 这么说吧   你很少能在客户代码里看到new这个字眼，这里并不是构造方法，而是注册器里面持有一个map，相当于装载到map里
           if (javaTypeClass != null) {
             if (jdbcType == null) {
               typeHandlerRegistry.register(javaTypeClass, typeHandlerClass);
@@ -420,6 +448,19 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
   }
 
+  //  <mappers>
+//    <mapper resource="org/apache/ibatis/builder/BlogMapper.xml"/>
+//    <mapper url="file:./src/test/java/org/apache/ibatis/builder/NestedBlogMapper.xml"/>
+//    <mapper class="org.apache.ibatis.builder.CachedAuthorMapper"/>  这个是接口啦
+//    <package name="org.apache.ibatis.builder.mapper"/>
+//  </mappers>
+  /**
+   * 有的是addMappers，有的是addMapper，有的是 XMLMapperBuilder parse  都是mapper，会不会殊途同归，来看看
+   * resource 和 url 都是xml   class和package是接口
+   * xml一定要有接口，而mapper可以有是xml的实现，或者是注解的实现
+   * @param parent
+   * @throws Exception
+   */
   private void mapperElement(XNode parent) throws Exception {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
@@ -427,6 +468,7 @@ public class XMLConfigBuilder extends BaseBuilder {
           String mapperPackage = child.getStringAttribute("name");
           configuration.addMappers(mapperPackage);
         } else {
+          // 有三种参数  resource   url   class
           String resource = child.getStringAttribute("resource");
           String url = child.getStringAttribute("url");
           String mapperClass = child.getStringAttribute("class");
@@ -436,6 +478,7 @@ public class XMLConfigBuilder extends BaseBuilder {
             XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, resource, configuration.getSqlFragments());
             mapperParser.parse();
           } else if (resource == null && url != null && mapperClass == null) {
+            // ThreadMap持有的
             ErrorContext.instance().resource(url);
             InputStream inputStream = Resources.getUrlAsStream(url);
             // 这里就是mappedStatement类的源头，从XMLConfigBuilder开始进入XMLMapperBuilder，复杂类必须Builder
@@ -443,7 +486,6 @@ public class XMLConfigBuilder extends BaseBuilder {
             mapperParser.parse();
           } else if (resource == null && url == null && mapperClass != null) {
             // 从MapperProxy的invoke一直找到这里，发现了mapperInterface的源头，它应该就是mapper映射的接口，在mybatis-config里面
-
             Class<?> mapperInterface = Resources.classForName(mapperClass);
             configuration.addMapper(mapperInterface);
           } else {

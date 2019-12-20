@@ -51,14 +51,20 @@ import org.apache.ibatis.type.TypeHandler;
 /**
  * @author Clinton Begin
  * @author Kazuki Shimizu
+ * 来具体看看这个解析mapper.xml的类，继承自BaseBuilder
+ * 晚上来详细看看
  */
 public class XMLMapperBuilder extends BaseBuilder {
-
+  /** 解析xml为document */
   private final XPathParser parser;
+  /** 辅助类，辅助啥呢，母鸡道，应该是一种新的模式 */
   private final MapperBuilderAssistant builderAssistant;
+  /** sql片段 */
   private final Map<String, XNode> sqlFragments;
+  /** 这个应该是xml扫描时候那个mapper上的resource标签吧*/
   private final String resource;
 
+  /**  许多的构造函数   */
   @Deprecated
   public XMLMapperBuilder(Reader reader, Configuration configuration, String resource, Map<String, XNode> sqlFragments, String namespace) {
     this(reader, configuration, resource, sqlFragments);
@@ -91,9 +97,7 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   public void parse() {
     if (!configuration.isResourceLoaded(resource)) {
-
       // 这里开始构建XMLMapper
-
       configurationElement(parser.evalNode("/mapper"));
       configuration.addLoadedResource(resource);
       bindMapperForNamespace();
@@ -101,9 +105,7 @@ public class XMLMapperBuilder extends BaseBuilder {
 
     parsePendingResultMaps();
     parsePendingCacheRefs();
-
     // MapperProxy
-
     parsePendingStatements();
   }
 

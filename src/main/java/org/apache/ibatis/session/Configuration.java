@@ -779,6 +779,7 @@ public class Configuration {
   }
 
   public void addInterceptor(Interceptor interceptor) {
+    // 拦截器链
     interceptorChain.addInterceptor(interceptor);
   }
 

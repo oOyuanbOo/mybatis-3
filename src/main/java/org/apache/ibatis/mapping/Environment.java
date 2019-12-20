@@ -21,10 +21,14 @@ import org.apache.ibatis.transaction.TransactionFactory;
 
 /**
  * @author Clinton Begin
+ * DB环境，主要是和数据库相关的配置在这里
  */
 public final class Environment {
+  /** 环境变量 */
   private final String id;
+  /** 事务工厂 */
   private final TransactionFactory transactionFactory;
+  /** 数据源 */
   private final DataSource dataSource;
 
   public Environment(String id, TransactionFactory transactionFactory, DataSource dataSource) {
@@ -42,6 +46,9 @@ public final class Environment {
     this.dataSource = dataSource;
   }
 
+  /**
+   * 主要构建工作都是在Builder中完成的
+   */
   public static class Builder {
     private String id;
     private TransactionFactory transactionFactory;
@@ -66,6 +73,7 @@ public final class Environment {
     }
 
     public Environment build() {
+      // 在这里面才去初始化，这样，你只需要在客户代码中来一个构造方法就行了
       return new Environment(this.id, this.transactionFactory, this.dataSource);
     }
 
