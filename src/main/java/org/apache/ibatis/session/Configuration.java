@@ -630,7 +630,6 @@ public class Configuration {
     }
 
     // 这里看到了plugin的身影，说明这里可以被插件拦截
-
     executor = (Executor) interceptorChain.pluginAll(executor);
     return executor;
   }
