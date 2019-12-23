@@ -88,7 +88,6 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     //   1.2 执行方法
     //   上面的方法里我找了五层才找到其中用到的参数mapperInterface，现在我要去找sqlSession的出处
     //   new SqlSessionFactoryBuilder(配置文件).build会创造SqlSessionFactory，它再openSession，这个类就出来了
-
     return mapperMethod.execute(sqlSession, args);
   }
 

@@ -592,7 +592,6 @@ public class Configuration {
   public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
 
     // 里面的实现并不是直接重写接口的方法，而是通过代理又做了一层包装，根据statement的类型，创建不同的StatementHandler（适配器模式）
-
     StatementHandler statementHandler = new RoutingStatementHandler(executor, mappedStatement, parameterObject, rowBounds, resultHandler, boundSql);
     statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);
     return statementHandler;
