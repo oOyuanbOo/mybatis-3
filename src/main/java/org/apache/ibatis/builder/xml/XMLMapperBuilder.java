@@ -140,9 +140,13 @@ public class XMLMapperBuilder extends BaseBuilder {
 
       // cache 就是缓存了，这里是二级缓存，一级是sqlSession级别默认打开
       cacheElement(context.evalNode("cache"));
+      // 类似resultMap，就是定义一个参数映射，有id type property节点，type就是映射的类，property就是包起来的参数，比map查询优雅一些吧
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
+      // resultMap
       resultMapElements(context.evalNodes("/mapper/resultMap"));
+      // sql 片段
       sqlElement(context.evalNodes("/mapper/sql"));
+      // 增删改查，关键点
       buildStatementFromContext(context.evalNodes("select|insert|update|delete"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing Mapper XML. The XML location is '" + resource + "'. Cause: " + e, e);
@@ -236,15 +240,22 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   private void cacheElement(XNode context) {
     if (context != null) {
+      // 自定义缓存类，要求实现接口org.apache.ibatis.cache.Cache，默认是PerpetualCache这个类
       String type = context.getStringAttribute("type", "PERPETUAL");
       Class<? extends Cache> typeClass = typeAliasRegistry.resolveAlias(type);
+      // 缓存策略，分为LRU FIFO SOFT WEAK 这个你在cache模块应该都看过了
       String eviction = context.getStringAttribute("eviction", "LRU");
       Class<? extends Cache> evictionClass = typeAliasRegistry.resolveAlias(eviction);
+      // 刷新时间，只有当执行增删改才会刷新
       Long flushInterval = context.getLongAttribute("flushInterval");
+      // 缓存对象个数，默认1024
       Integer size = context.getIntAttribute("size");
+      // 缓存是否只读，如果是只读，则不会因为并发读写造成不一致
       boolean readWrite = !context.getBooleanAttribute("readOnly", false);
+      // 是否使用阻塞性缓存，在读写时，它会加入JNI的锁进行操作
       boolean blocking = context.getBooleanAttribute("blocking", false);
       Properties props = context.getChildrenAsProperties();
+      // 这些配置都交给小助手
       builderAssistant.useNewCache(typeClass, evictionClass, flushInterval, size, readWrite, blocking, props);
     }
   }
@@ -289,8 +300,41 @@ public class XMLMapperBuilder extends BaseBuilder {
     return resultMapElement(resultMapNode, Collections.emptyList(), null);
   }
 
+  /**
+   * 难怪这么长，最复杂的就是resultMaple   什么一比N映射之类的
+   * @param resultMapNode
+   * @param additionalResultMappings
+   * @param enclosingType
+   * @return
+   * @throws Exception
+   * <resultMap id="addressMapper"
+   *     type="org.apache.ibatis.submitted.column_prefix.Address">
+   *     <constructor>
+   *       <idArg column="id" javaType="int" />
+   *       <arg column="state" javaType="string" />
+   *     </constructor>
+   *     <association property="zip"
+   *       javaType="org.apache.ibatis.submitted.column_prefix.Zip"
+   *       columnPrefix="zip_" />
+   *     <association property="phone1"
+   *       javaType="org.apache.ibatis.submitted.column_prefix.Phone"
+   *       columnPrefix="p1_" />
+   *     <association property="phone2"
+   *       javaType="org.apache.ibatis.submitted.column_prefix.Phone"
+   *       columnPrefix="p2_" />
+   *     <discriminator column="addr_type" javaType="int">
+   *       <case value="1"
+   *         resultType="org.apache.ibatis.submitted.column_prefix.AddressWithCaution">
+   *         <result property="caution" column="caution" />
+   *       </case>
+   *     </discriminator>
+   *   </resultMap>
+   */
   private ResultMap resultMapElement(XNode resultMapNode, List<ResultMapping> additionalResultMappings, Class<?> enclosingType) throws Exception {
+    // 石衫说主干为主，这个先不管
     ErrorContext.instance().activity("processing " + resultMapNode.getValueBasedIdentifier());
+    // 这句一换行，人都懵逼了，
+    //
     String type = resultMapNode.getStringAttribute("type",
         resultMapNode.getStringAttribute("ofType",
             resultMapNode.getStringAttribute("resultType",
