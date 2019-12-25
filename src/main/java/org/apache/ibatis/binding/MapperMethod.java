@@ -102,7 +102,6 @@ public class MapperMethod {
           // 1.2.1 将参数转成map，有Param注解的包装成<param参数，value>，没有<index，value>
           Object param = method.convertArgsToSqlCommandParam(args);
           // 1.2.2 command 是本类的构造函数中初始化的，common.getName()就是Statement的id，也就mapper中的接口
-
           result = sqlSession.selectOne(command.getName(), param);
           if (method.returnsOptional()
             && (result == null || !method.getReturnType().equals(result.getClass()))) {

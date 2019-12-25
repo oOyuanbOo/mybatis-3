@@ -62,7 +62,6 @@ public class SimpleExecutor extends BaseExecutor {
       // 这里会创建数据库会话器
       StatementHandler handler = configuration.newStatementHandler(wrapper, ms, parameter, rowBounds, resultHandler, boundSql);
       // 只顾着看下面的query了，这一行会设置预编译中的参数，也很重要
-
       stmt = prepareStatement(handler, ms.getStatementLog());
       return handler.query(stmt, resultHandler);
     } finally {

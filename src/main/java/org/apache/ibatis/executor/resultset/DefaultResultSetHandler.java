@@ -188,7 +188,6 @@ public class DefaultResultSetHandler implements ResultSetHandler {
 
 
     // 返回结果
-
     List<ResultMap> resultMaps = mappedStatement.getResultMaps();
     int resultMapCount = resultMaps.size();
     validateResultMapsCount(rsw, resultMapCount);
