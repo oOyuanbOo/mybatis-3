@@ -72,7 +72,6 @@ public class PreparedStatementHandler extends BaseStatementHandler {
     // 就是执行预编译的意思吧
     ps.execute();
     // 这里应该就是开始处理返回结果了
-
     return resultSetHandler.handleResultSets(ps);
   }
 
